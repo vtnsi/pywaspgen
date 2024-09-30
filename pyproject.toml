@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools >= 70.0", "wheel >= 0.43"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pywaspgen"
+version = "2024.0.1"
+dependencies = [
+        "distinctipy",
+        "jsonschema",
+        "m2r2",
+        "matplotlib",
+        "numpy",
+        "scipy",
+        "sphinx",
+        "sphinx-rtd-theme",
+        "sphinx-jsonschema",
+        "tqdm"
+]
+requires-python = ">= 3.8"
+authors = [
+  {name = "Virginia Tech National Security Institute"}
+]
+maintainers = [
+  {name = "William C. Headley", email = "cheadley@vt.edu"}
+]
+description = "Wideband Aggregate SPectrum Generator (WASPGEN)"
+readme = "README.md"
+license = {text = "MIT License"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pywaspgen"]
+
+[tool.black]
+line-length = 1000
+
+[tool.ruff]
+line-length = 1000
+
+[tool.isort]
+profile = "black"
