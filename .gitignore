@@ -1,0 +1,6 @@
+# Virtual Environment and Build Files.
+*.env
+*egg-info
+/build
+*__pycache__*
+docs/_build

@@ -1,0 +1,46 @@
+{
+  "generation": {
+    "rand_seed": 1337,
+    "pool": 8
+  },
+  "spectrum": {
+    "observation_duration": 100000,
+    "sig_types": [
+      { "format": "ask", "order": 2, "label": "BASK" },
+      { "format": "ask", "order": 4, "label": "4ASK" },
+      { "format": "ask", "order": 8, "label": "8ASK" },
+      { "format": "ask", "order": 16, "label": "16ASK" },
+      { "format": "pam", "order": 4, "label": "4PAM" },
+      { "format": "pam", "order": 8, "label": "8PAM" },
+      { "format": "pam", "order": 16, "label": "16PAM" },
+      { "format": "psk", "order": 2, "label": "BPSK" },
+      { "format": "psk", "order": 4, "label": "QPSK" },
+      { "format": "psk", "order": 8, "label": "8PSK" },
+      { "format": "psk", "order": 16, "label": "16PSK" },
+      { "format": "qam", "order": 16, "label": "16QAM" },
+      { "format": "qam", "order": 64, "label": "64QAM" }
+    ],
+    "max_signals": 10,
+    "allow_collisions_flag": false,
+    "max_attempts": 100,
+    "save_modems": false
+  },
+  "burst_defaults": {
+    "cent_freq": [ -0.4, 0.4 ],
+    "bandwidth": [ 0.01, 0.2 ],
+    "start": [ 0, 10000 ],
+    "duration": [ 0, 90000 ]
+  },
+  "iq_defaults": {
+    "snr": [ 10, 30 ]
+  },
+  "pulse_shape_defaults": {
+    "format": "RRC",
+    "beta": [ 0.1, 0.9 ],
+    "span": [ 10, 20 ],
+    "window": {
+      "type": "kaiser",
+      "params": 5
+    }
+  }
+}
