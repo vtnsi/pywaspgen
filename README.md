@@ -1,10 +1,10 @@
 # Welcome to the PyWASPGEN Python Package!
 
-PyWASPGEN (Python Wideband Aggregate SPectrum GENerator) is intended as a native python dataset generation tool for creating synthetic aggregate radio frequency captures for initial testing and evaluation of spectrum sensing algorithms. The data produced by this tool is particularly useful for testing signal detection algorithms (i.e. where in time and frequency signals exist in the capture) as well as signal classification algorithms (i.e. what is the signaling format of the detected signal).
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/ba1642ed-5193-4b99-bf99-048c6f5cec9c" width="600px"/>
 </p>
+
+PyWASPGEN (Python Wideband Aggregate SPectrum GENerator) is intended as a native python dataset generation tool for creating synthetic aggregate radio frequency captures for initial testing and evaluation of spectrum sensing algorithms. The data produced by this tool is particularly useful for testing signal detection algorithms (i.e. where in time and frequency signals exist in the capture) as well as signal classification algorithms (i.e. what is the signaling format of the detected signal).
 
 ## Installation
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install PyWASPGEN from the root directory of the repository.
