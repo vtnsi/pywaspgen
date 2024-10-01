@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to the PyWASPGEN Python Package! &mdash; Python Wideband Aggregate SPectrum GENerator (PyWASPGEN)  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The PyWASPGEN Package" href="pywaspgen.html" />
+    <link rel="prev" title="Python Wideband Aggregate Spectrum Generator (PyWASPGEN)" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Python Wideband Aggregate SPectrum GENerator (PyWASPGEN)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Welcome to the PyWASPGEN Python Package!</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#for-developers">For Developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#direct-capture-generation-see-example-script-below-for-detailed-comments">Direct Capture Generation (see example script below for detailed comments)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pseudorandom-capture-generation-see-example-script-below-for-detailed-comments">Pseudorandom Capture Generation (see example script below for detailed comments)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributors">Contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pywaspgen.html">The PyWASPGEN Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configs.html">Generation Schema</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Python Wideband Aggregate SPectrum GENerator (PyWASPGEN)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to the PyWASPGEN Python Package!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/readme_link.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-the-pywaspgen-python-package">
+<h1>Welcome to the PyWASPGEN Python Package!<a class="headerlink" href="#welcome-to-the-pywaspgen-python-package" title="Link to this heading"></a></h1>
+<p>PyWASPGEN (Python Wideband Aggregate SPectrum GENerator) is intended as a native python dataset generation tool for creating synthetic aggregate radio frequency captures for initial testing and evaluation of spectrum sensing algorithms. The data produced by this tool is particularly useful for testing signal detection algorithms (i.e. where in time and frequency signals exist in the capture) as well as signal classification algorithms (i.e. what is the signaling format of the detected signal).</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Use the package manager <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a> to install PyWASPGEN from the root directory of the repository.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="for-developers">
+<h2>For Developers<a class="headerlink" href="#for-developers" title="Link to this heading"></a></h2>
+<p>If you’re interested in contributing to the development of PyWASPGEN, you’ll need to install <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pre-commit
+pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>Generating synthetic radio frequency captures using PyWASPGEN can either be done directly through user-specified signal generation parameters or pseudorandomly through user-specified signal generation parameter ranges.</p>
+<section id="direct-capture-generation-see-example-script-below-for-detailed-comments">
+<h3>Direct Capture Generation (see example script below for detailed comments)<a class="headerlink" href="#direct-capture-generation-see-example-script-below-for-detailed-comments" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/direct_generation.py
+</pre></div>
+</div>
+</section>
+<section id="pseudorandom-capture-generation-see-example-script-below-for-detailed-comments">
+<h3>Pseudorandom Capture Generation (see example script below for detailed comments)<a class="headerlink" href="#pseudorandom-capture-generation-see-example-script-below-for-detailed-comments" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>examples/random_generation.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Link to this heading"></a></h2>
+<p>PyWASPGEN is based upon work supported, in whole or in part, by the U.S. Department of Defense through the Office of the Assistant Secretary of Defense for Research and Engineering (ASD(R&amp;E)) under Contract HQ003419D0003. The Systems Engineering Research Center (SERC) is a federally funded University Affiliated Research Center managed by Stevens Institute of Technology. Any views, opinions, findings and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the United States Department of Defense nor ASD(R&amp;E).</p>
+</section>
+<section id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Role</p></th>
+<th class="head"><p>Title</p></th>
+<th class="head"><p>Email</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>William ‘Chris’ Headley</p></td>
+<td><p>Developer</p></td>
+<td><p>Associate Director, Spectrum Dominance Division, Virginia Tech National Security Institute</p></td>
+<td><p><a class="reference external" href="mailto:cheadley&#37;&#52;&#48;vt&#46;edu">cheadley<span>&#64;</span>vt<span>&#46;</span>edu</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Caleb McIrvin</p></td>
+<td><p>Developer</p></td>
+<td><p>PhD Student, Spectrum Dominance Division, Virginia Tech National Security Institute</p></td>
+<td><p><a class="reference external" href="mailto:calebmcirvin111&#37;&#52;&#48;vt&#46;edu">calebmcirvin111<span>&#64;</span>vt<span>&#46;</span>edu</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Michael ‘Alex’ Kyer</p></td>
+<td><p>Developer</p></td>
+<td><p>Software Engineer, Intelligent Systems Division, Virginia Tech National Security Institute</p></td>
+<td><p><a class="reference external" href="mailto:makyer19&#37;&#52;&#48;vt&#46;edu">makyer19<span>&#64;</span>vt<span>&#46;</span>edu</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://choosealicense.com/licenses/mit/">MIT</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Python Wideband Aggregate Spectrum Generator (PyWASPGEN)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pywaspgen.html" class="btn btn-neutral float-right" title="The PyWASPGEN Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Virginia Tech National Security Institute.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
