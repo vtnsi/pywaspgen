@@ -20,7 +20,7 @@
       { "format": "qam", "order": 16, "label": "16QAM" },
       { "format": "qam", "order": 64, "label": "64QAM" }
     ],
-    "max_signals": 100,
+    "max_signals": 10,
     "allow_collisions_flag": false,
     "max_attempts": 100,
     "save_modems": false

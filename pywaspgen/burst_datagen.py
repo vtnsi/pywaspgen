@@ -51,7 +51,7 @@ class BurstDatagen:
                 continue
             return True
         return False
-    
+
     def __check_not_observed(self, candidate_burst):
         """
         Checks if a burst is within the observation window.
@@ -62,7 +62,7 @@ class BurstDatagen:
         Returns:
             bool: True if ``candidate_burst`` is outside of the observation interval, otherwise False.
         """
-        if candidate_burst.start < 0 and candidate_burst.duration < candidate_burst.start:
+        if (candidate_burst.start < 0 and candidate_burst.duration < np.abs(candidate_burst.start)) or candidate_burst.start > self.config["spectrum"]["observation_duration"]:
             return True
         return False
 
@@ -102,20 +102,17 @@ class BurstDatagen:
         burst_list = []
         sig_count = 0
         stop_gen = False
+        trial_count = 0
         while not stop_gen:
             candidate_burst = self.gen_burst(rng)
-            if self.config["spectrum"]["allow_collisions_flag"]:
+            if not self.__check_not_observed(candidate_burst) and (self.config["spectrum"]["allow_collisions_flag"] or (not self.config["spectrum"]["allow_collisions_flag"] and not self.__check_collisions(candidate_burst, burst_list))):
                 burst_list.append(candidate_burst)
                 sig_count += 1
-            elif not self.config["spectrum"]["allow_collisions_flag"]:
-                if not self.__check_collisions(candidate_burst, burst_list) and not self.__check_not_observed(candidate_burst):
-                    burst_list.append(candidate_burst)
-                    sig_count += 1
-                    trial_count = 0
-                else:
-                    trial_count += 1
-                if trial_count == self.config["spectrum"]["max_attempts"]:
-                    stop_gen = True
+                trial_count = 0
+            else:
+                trial_count += 1
+            if trial_count == self.config["spectrum"]["max_attempts"]:
+                stop_gen = True
             if sig_count == self.config["spectrum"]["max_signals"]:
                 stop_gen = True
         return burst_list
