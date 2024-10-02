@@ -23,11 +23,11 @@ repos:
 
 -   repo: local
     hooks:
-	- id: pytest-check
-        name: pytest-check
-        stages: [commit]
-        types: [python]
-        entry: pytest
-        language: system
-        pass_filenames: false
-        always_run: true
+    - id: pytest-check
+      name: pytest-check
+      stages: [commit]
+      types: [python]
+      entry: pytest
+      language: system
+      pass_filenames: false
+      always_run: true
