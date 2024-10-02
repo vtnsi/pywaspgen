@@ -51,6 +51,20 @@ class BurstDatagen:
                 continue
             return True
         return False
+    
+    def __check_not_observed(self, candidate_burst):
+        """
+        Checks if a burst is within the observation window.
+
+        Args:
+            candidate_burst (obj): The burst_def objects, of type :class:`pywaspgen.burst_def.BurstDef`, to check for overlaps.
+
+        Returns:
+            bool: True if ``candidate_burst`` is outside of the observation interval, otherwise False.
+        """
+        if candidate_burst.start < 0 and candidate_burst.duration < candidate_burst.start:
+            return True
+        return False
 
     def gen_burst(self, rng=None):
         """
@@ -94,7 +108,7 @@ class BurstDatagen:
                 burst_list.append(candidate_burst)
                 sig_count += 1
             elif not self.config["spectrum"]["allow_collisions_flag"]:
-                if not self.__check_collisions(candidate_burst, burst_list):
+                if not self.__check_collisions(candidate_burst, burst_list) and not self.__check_not_observed(candidate_burst):
                     burst_list.append(candidate_burst)
                     sig_count += 1
                     trial_count = 0

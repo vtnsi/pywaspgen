@@ -131,6 +131,20 @@
                 <span class="k">continue</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">def</span> <span class="nf">__check_not_observed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidate_burst</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if a burst is within the observation window.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            candidate_burst (obj): The burst_def objects, of type :class:`pywaspgen.burst_def.BurstDef`, to check for overlaps.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if ``candidate_burst`` is outside of the observation interval, otherwise False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">candidate_burst</span><span class="o">.</span><span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">candidate_burst</span><span class="o">.</span><span class="n">duration</span> <span class="o">&lt;</span> <span class="n">candidate_burst</span><span class="o">.</span><span class="n">start</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="BurstDatagen.gen_burst">
 <a class="viewcode-back" href="../../pywaspgen.html#pywaspgen.burst_datagen.BurstDatagen.gen_burst">[docs]</a>
@@ -179,7 +193,7 @@
                 <span class="n">burst_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate_burst</span><span class="p">)</span>
                 <span class="n">sig_count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;spectrum&quot;</span><span class="p">][</span><span class="s2">&quot;allow_collisions_flag&quot;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_collisions</span><span class="p">(</span><span class="n">candidate_burst</span><span class="p">,</span> <span class="n">burst_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_collisions</span><span class="p">(</span><span class="n">candidate_burst</span><span class="p">,</span> <span class="n">burst_list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_not_observed</span><span class="p">(</span><span class="n">candidate_burst</span><span class="p">):</span>
                     <span class="n">burst_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate_burst</span><span class="p">)</span>
                     <span class="n">sig_count</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="n">trial_count</span> <span class="o">=</span> <span class="mi">0</span>

@@ -20,7 +20,7 @@
       { "format": "qam", "order": 16, "label": "16QAM" },
       { "format": "qam", "order": 64, "label": "64QAM" }
     ],
-    "max_signals": 10,
+    "max_signals": 100,
     "allow_collisions_flag": false,
     "max_attempts": 100,
     "save_modems": false
@@ -28,8 +28,8 @@
   "burst_defaults": {
     "cent_freq": [ -0.4, 0.4 ],
     "bandwidth": [ 0.01, 0.2 ],
-    "start": [ 0, 10000 ],
-    "duration": [ 0, 90000 ]
+    "start": [ -9000, 90000 ],
+    "duration": [ 10000, 100000 ]
   },
   "iq_defaults": {
     "snr": [ 10, 30 ]

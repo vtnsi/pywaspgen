@@ -127,7 +127,21 @@ class IQDatagen:
             burst_iq = np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.cdouble)
             samples, modem = self._get_iq(burst)
             if samples.size != 0:
-                burst_iq[burst.start : burst.get_end_time()] += samples
+                if burst.start < 0: # Checks if burst starts before observation.
+                    if burst.get_end_time() > self.config["spectrum"]["observation_duration"]:    # Checks if burst ends after observation.
+                        burst_iq[0:self.config["spectrum"]["observation_duration"]] = samples[burst.start:-(burst.get_end_time()-self.config["spectrum"]["observation_duration"])]
+                        burst.start = 0
+                        burst.duration = self.config["spectrum"]["observation_duration"]
+                    else:
+                        burst_iq[0:burst.get_end_time()] = samples[np.abs(burst.start):]
+                        burst.duration = burst.duration-np.abs(burst.start)
+                        burst.start = 0
+                else:
+                    if burst.get_end_time() > self.config["spectrum"]["observation_duration"]:    # Checks if burst ends after observation.
+                        burst_iq[burst.start:self.config["spectrum"]["observation_duration"]] = samples[0:-(burst.get_end_time()-self.config["spectrum"]["observation_duration"])]
+                        burst.duration = burst.duration - (burst.get_end_time()-self.config["spectrum"]["observation_duration"])
+                    else:
+                        burst_iq[burst.start:burst.get_end_time()] += samples
                 iq_data += burst_iq
                 if self.config["spectrum"]["save_modems"]:
                     burst.metadata["modem"] = modem
