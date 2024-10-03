@@ -184,4 +184,5 @@ class BurstDatagen:
             legend_elements.append(patches.Patch(facecolor=color_list[[k for k, d in enumerate(self.config["spectrum"]["sig_types"]) if sig_type in d.values()][0]], edgecolor="k", label=sig_type))
             counter += 1
         ax.legend(handles=legend_elements)
+        ax.set_xlim([0, self.config["spectrum"]["observation_duration"]])
         return ax

@@ -157,6 +157,7 @@ class IQDatagen:
             ax.set_title("Spectrogram River Plot with Overlaid Spectrum Metadata")
 
         plt.specgram(iq_data, 256, 1.0, noverlap=64, cmap="plasma")
+        plt.xlim([0, self.config["spectrum"]["observation_duration"]])
         cbar = plt.colorbar()
         cbar.set_label("Amplitude (dB)")
         return ax
