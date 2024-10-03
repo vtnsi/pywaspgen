@@ -58,15 +58,7 @@ class IQDatagen:
             float complex: A list of numpy IQ data arrays for the provided ``burst_lists``.
         """
         with multiprocessing.Pool(self.config["generation"]["pool"]) as p:
-            return list(
-                p.starmap(
-                    self.gen_iqdata,
-                    tqdm.tqdm(
-                        zip(burst_lists, range(len(burst_lists))),
-                        total=len(burst_lists),
-                    ),
-                )
-            )
+            return list(zip(*list(p.starmap(self.gen_iqdata, tqdm.tqdm(zip(burst_lists, range(len(burst_lists))), total=len(burst_lists))))))
 
     def gen_iqdata(self, burst_list, data_idx=-1):
         """
@@ -124,14 +116,19 @@ class IQDatagen:
 
         new_burst_list = []
         for burst in burst_list:
-            burst_iq = np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.cdouble)
             samples, modem = self._get_iq(burst)
-            if samples.size != 0:
-                burst_iq[burst.start : burst.get_end_time()] += samples
-                iq_data += burst_iq
-                if self.config["spectrum"]["save_modems"]:
-                    burst.metadata["modem"] = modem
-                new_burst_list.append(burst)
+            start_iq_idx = max(0, burst.start)
+            start_samples_idx = max(0, -burst.start)
+            num_samples = min(burst.duration - start_samples_idx, self.config["spectrum"]["observation_duration"] - start_iq_idx)
+            iq_data[start_iq_idx : start_iq_idx + num_samples] += samples[start_samples_idx : start_samples_idx + num_samples]
+
+            burst.start = start_iq_idx
+            burst.duration = num_samples
+
+            if self.config["spectrum"]["save_modems"]:
+                burst.metadata["modem"] = modem
+            new_burst_list.append(burst)
+
         return iq_data, new_burst_list
 
     def plot_iqdata(self, iq_data, ax=[]):
@@ -160,6 +157,7 @@ class IQDatagen:
             ax.set_title("Spectrogram River Plot with Overlaid Spectrum Metadata")
 
         plt.specgram(iq_data, 256, 1.0, noverlap=64, cmap="plasma")
+        plt.xlim([0, self.config["spectrum"]["observation_duration"]])
         cbar = plt.colorbar()
         cbar.set_label("Amplitude (dB)")
         return ax

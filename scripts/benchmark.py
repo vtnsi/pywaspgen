@@ -19,6 +19,6 @@ if __name__ == "__main__":
 
     start_time = time.time()
     burst_lists = burst_gen.gen_batch(batch_size)
-    iq_data = iq_gen.gen_batch(burst_lists)
+    iq_data, burst_lists = iq_gen.gen_batch(burst_lists)
 
     print("Generated {} signals in {:.3f} seconds.".format(batch_size, time.time() - start_time))
