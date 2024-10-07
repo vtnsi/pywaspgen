@@ -4,7 +4,6 @@ This module provides functions for adding impairments to in-phase/quadrature (IQ
 
 import numpy as np
 
-
 def awgn(samps, snr_db):
     """
     Applies Additive White Gaussian Noise (AWGN) to the IQ data ``samps``. Assumes the IQ data is normalized to unit average power.
@@ -19,7 +18,6 @@ def awgn(samps, snr_db):
     snr_lin = 10.0 ** (snr_db / 10.0)
     noise_samps = np.random.normal(0.0, np.sqrt(0.5), len(samps)) + 1.0j * (np.random.normal(0.0, np.sqrt(0.5), len(samps)))
     return np.sqrt(snr_lin / 2.0) * samps + noise_samps
-
 
 def freq_off(samps, freq):
     """

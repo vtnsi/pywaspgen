@@ -14,7 +14,6 @@ import tqdm
 
 from pywaspgen import burst_def, validate_schema
 
-
 class BurstDatagen:
     """
     Used to create burst definition objects, of type :class:`pywaspgen.burst_def.BurstDef`, that specify the time and frequency extent of a burst as well as the burst's metadata. These objects are used as input to :class:`pywaspgen.iq_datagen.IQDatagen` to create in-phase/quadrature (IQ) data.

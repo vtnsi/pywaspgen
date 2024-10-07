@@ -11,7 +11,6 @@ import tqdm
 
 from pywaspgen import impairments, modems, validate_schema
 
-
 class IQDatagen:
     """
     Used to create in-phase/quadrature (IQ) data given burst definition objects, of type :class:`pywaspgen.burst_def.BurstDef`.
@@ -40,7 +39,11 @@ class IQDatagen:
         Returns:
             float complex, obj: The IQ data of the provided burst definition, the :class:`pywaspgen.modems` object used to create the IQ data.
         """
-        modem = modems.LDAPM(burst.sig_type, burst.metadata["pulse_type"])
+        if burst.sig_type["family"] == "ldapm":
+            modem = modems.LDAPM(burst.sig_type, burst.metadata["pulse_type"])
+        elif burst.sig_type["family"] == "fsk":
+            modem = modems.FSK(burst.metadata["deviation"], burst.metadata["symbol_rate"], burst.sig_type)
+
         samples = modem.gen_samples(burst.duration)
         if samples.size != 0:
             samples = impairments.freq_off(samples, burst.cent_freq)
@@ -83,43 +86,54 @@ class IQDatagen:
                 self.config["iq_defaults"]["snr"][0],
                 self.config["iq_defaults"]["snr"][1],
             )
-            beta = (
-                round(
-                    100.0
-                    * rng.uniform(
-                        self.config["pulse_shape_defaults"]["beta"][0],
-                        self.config["pulse_shape_defaults"]["beta"][1],
+            if burst_list[k].sig_type["family"] == "ldapm":
+                beta = (
+                    round(
+                        100.0
+                        * rng.uniform(
+                            self.config["pulse_shape_defaults"]["beta"][0],
+                            self.config["pulse_shape_defaults"]["beta"][1],
+                        )
                     )
+                    / 100.0
                 )
-                / 100.0
-            )
-            span = rng.integers(
-                self.config["pulse_shape_defaults"]["span"][0],
-                self.config["pulse_shape_defaults"]["span"][1],
-                endpoint=True,
-            )
-            sps = round(10.0 * ((beta + 1.0) / burst_list[k].bandwidth)) / 10.0
-            burst_list[k].bandwidth = (beta + 1.0) / sps
-            burst_list[k].metadata["snr"] = snr
-            burst_list[k].metadata["pulse_type"] = {
-                "sps": sps,
-                "format": self.config["pulse_shape_defaults"]["format"],
-                "params": {
-                    "beta": beta,
-                    "span": span,
-                    "window": (
-                        self.config["pulse_shape_defaults"]["window"]["type"],
-                        self.config["pulse_shape_defaults"]["window"]["params"],
-                    ),
-                },
-            }
+                span = rng.integers(
+                    self.config["pulse_shape_defaults"]["span"][0],
+                    self.config["pulse_shape_defaults"]["span"][1],
+                    endpoint=True,
+                )
+                sps = round(10.0 * ((beta + 1.0) / burst_list[k].bandwidth)) / 10.0
+                burst_list[k].bandwidth = (beta + 1.0) / sps
+                burst_list[k].metadata["snr"] = snr
+                burst_list[k].metadata["pulse_type"] = {
+                    "sps": sps,
+                    "format": self.config["pulse_shape_defaults"]["format"],
+                    "params": {
+                        "beta": beta,
+                        "span": span,
+                        "window": (
+                            self.config["pulse_shape_defaults"]["window"]["type"],
+                            self.config["pulse_shape_defaults"]["window"]["params"],
+                        ),
+                    },
+                }
+            else:
+                burst_list[k].metadata["snr"] = snr
+                burst_list[k].metadata["mod_index"] = rng.uniform(
+                            self.config["iq_defaults"]["mod_index"][0],
+                            self.config["iq_defaults"]["mod_index"][1],
+                        )
+                burst_list[k].metadata["symbol_rate"] = burst_list[k].bandwidth/(burst_list[k].metadata["mod_index"]*(burst_list[k].sig_type["order"]-1)+2.0)
+                burst_list[k].metadata["deviation"] = (burst_list[k].metadata["mod_index"]*burst_list[k].metadata["symbol_rate"]*(burst_list[k].sig_type["order"]-1))/2.0
 
         new_burst_list = []
         for burst in burst_list:
             samples, modem = self._get_iq(burst)
+            burst.duration = len(samples)
             start_iq_idx = max(0, burst.start)
             start_samples_idx = max(0, -burst.start)
             num_samples = min(burst.duration - start_samples_idx, self.config["spectrum"]["observation_duration"] - start_iq_idx)
+
             iq_data[start_iq_idx : start_iq_idx + num_samples] += samples[start_samples_idx : start_samples_idx + num_samples]
 
             burst.start = start_iq_idx

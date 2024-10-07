@@ -1,24 +1,27 @@
 {
   "generation": {
-    "rand_seed": 1337,
+    "rand_seed": 1234,
     "pool": 8
   },
   "spectrum": {
     "observation_duration": 100000,
     "sig_types": [
-      { "format": "ask", "order": 2, "label": "BASK" },
-      { "format": "ask", "order": 4, "label": "4ASK" },
-      { "format": "ask", "order": 8, "label": "8ASK" },
-      { "format": "ask", "order": 16, "label": "16ASK" },
-      { "format": "pam", "order": 4, "label": "4PAM" },
-      { "format": "pam", "order": 8, "label": "8PAM" },
-      { "format": "pam", "order": 16, "label": "16PAM" },
-      { "format": "psk", "order": 2, "label": "BPSK" },
-      { "format": "psk", "order": 4, "label": "QPSK" },
-      { "format": "psk", "order": 8, "label": "8PSK" },
-      { "format": "psk", "order": 16, "label": "16PSK" },
-      { "format": "qam", "order": 16, "label": "16QAM" },
-      { "format": "qam", "order": 64, "label": "64QAM" }
+      { "family": "ldapm", "format": "ask", "order": 2, "label": "BASK" },
+      { "family": "ldapm", "format": "ask", "order": 4, "label": "4ASK" },
+      { "family": "ldapm", "format": "ask", "order": 8, "label": "8ASK" },
+      { "family": "ldapm", "format": "ask", "order": 16, "label": "16ASK" },
+      { "family": "ldapm", "format": "pam", "order": 4, "label": "4PAM" },
+      { "family": "ldapm", "format": "pam", "order": 8, "label": "8PAM" },
+      { "family": "ldapm", "format": "pam", "order": 16, "label": "16PAM" },
+      { "family": "ldapm", "format": "psk", "order": 2, "label": "BPSK" },
+      { "family": "ldapm", "format": "psk", "order": 4, "label": "QPSK" },
+      { "family": "ldapm", "format": "psk", "order": 8, "label": "8PSK" },
+      { "family": "ldapm", "format": "psk", "order": 16, "label": "16PSK" },
+      { "family": "ldapm", "format": "qam", "order": 16, "label": "16QAM" },
+      { "family": "ldapm", "format": "qam", "order": 64, "label": "64QAM" },
+      { "family": "fsk", "format": "fsk", "order": 2, "label": "2FSK"},
+      { "family": "fsk", "format": "fsk", "order": 4, "label": "4FSK"},
+      { "family": "fsk", "format": "fsk", "order": 8, "label": "8FSK"}
     ],
     "max_signals": 10,
     "allow_collisions_flag": false,
@@ -32,7 +35,8 @@
     "duration": [ 10000, 100000 ]
   },
   "iq_defaults": {
-    "snr": [ 10, 30 ]
+    "snr": [ 10, 30 ],
+    "mod_index": [ 0.5, 3.0]
   },
   "pulse_shape_defaults": {
     "format": "RRC",

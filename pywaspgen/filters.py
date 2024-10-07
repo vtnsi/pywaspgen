@@ -8,7 +8,6 @@ from fractions import Fraction
 import numpy as np
 import scipy.signal as signal
 
-
 class _Filter:
     """
     Base class for performing pulse shape filtering of IQ data.
@@ -96,7 +95,6 @@ class _Filter:
             int: The number of modulated IQ data symbols needed to achieve the amount of IQ samples specified by ``num_samples`` after applying an interpolation filter.
         """
         return int(np.ceil((num_samples - self.pulse_type["params"]["span"] * self.pulse_type["sps"] + 1.0) / self.pulse_type["sps"]))
-
 
 class RRC(_Filter):
     """

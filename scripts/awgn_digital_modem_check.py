@@ -11,22 +11,24 @@ import pywaspgen.modems as modems
 # In PyWASPGEN, a modem defines the type of communication format used to generate in-phase/quadrature (IQ) data and is typically defined by its 'sig_type' and its 'pulse_type'.
 #   sig_type - Specifies for the given modem the sub-class parameters of the communication format.
 #   pulse_type - Specifies for the given modem the pulse shape parameters used to shape the spectral content of the IQ data.
-sig_type = {"format": "qam", 
-            "order": 64}
-pulse_type = {
-    "sps": 5.2,
-    "format": "RRC",
-    "params": {"beta": 0.4, "span": 10, "window": ("kaiser", 5.0)},
-}
-# Instantiate the modem object and specifies the signal type and pulse shaping parameters.
-modem = modems.LDAPM(sig_type, pulse_type)
+sig_type = {"format": "fsk", 
+            "order": 8}
 
-num_symbols = 100000            # The number of data symbols to be used to calculate the simulated performance. Higher number will approach theory better but take longer to execute.
-snr_db_range = (0, 20)          # The range of signal-to-noise ratios (SNRs) to calculate the performance of.
+num_symbols = 10000             # The number of data symbols to be used to calculate the simulated performance. Higher number will approach theory better but take longer to execute.
+snr_db_range = (5, 5)          # The range of signal-to-noise ratios (SNRs) to calculate the performance of.
 
 ser_sim = []
 ser_theory = []
 for snr_db in tqdm.trange(snr_db_range[0], snr_db_range[1] + 1):
+    BW = np.random.uniform(0.1, 0.5)
+    H = np.random.uniform(0.5, 3.0)
+
+    symbol_rate = BW/(H*(sig_type["order"]-1)+2.0)
+    outer_deviation = ((H*symbol_rate*(sig_type["order"]-1))/2.0)
+
+    # Instantiate the modem object and specifies the signal type and pulse shaping parameters.
+    modem = modems.FSK(outer_deviation, symbol_rate, sig_type)
+
     tx_symbols = modem.gen_symbols(num_symbols)         # Generates the digital data symbols to transmit.
     tx_samples = modem.get_samples(tx_symbols)          # Modulates the digital data symbols to get the transmit samples.
 
@@ -36,17 +38,18 @@ for snr_db in tqdm.trange(snr_db_range[0], snr_db_range[1] + 1):
     # Calculates the number of symbols different between the transmit symbols and the received symbols and then calculates the symbol error rate (SER).
     symbol_errors = 0
     for k in range(0, len(rx_symbols)):
-        symbol_errors = symbol_errors + (1 - np.equal(tx_symbols[k], modem.get_nearest_symbol(rx_symbols[k])))
+        symbol_errors = symbol_errors + (1 - np.equal(tx_symbols[k], rx_symbols[k]))
     ser_sim.append(symbol_errors / len(rx_symbols))
 
     ser_theory.append(modem.get_theory_awgn(snr_db))    # Generates the theoretical SER (theoretical equation assumed to be provided by the modem itself).
 
 # Plotting SER Simulation and Theory Curves
+print(ser_sim)
+print(ser_theory)
 plt.figure(figsize=(15, 5))
 plt.semilogy(range(snr_db_range[0], snr_db_range[1] + 1), ser_sim, "b-*", label="Simulated")
 plt.semilogy(range(snr_db_range[0], snr_db_range[1] + 1), ser_theory, "r-*", label="Theory")
 plt.xlabel("SNR (dB)")
 plt.ylabel("Symbol Error Rate (SER)")
-plt.title("Signal Type: " + str(sig_type) + "\nPulse Type: " + str(pulse_type))
 plt.legend()
 plt.show()

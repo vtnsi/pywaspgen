@@ -23,7 +23,7 @@ SCHEMA = {
                     "items": {
                         "type": "object",
                         "properties": {
-                            "format": {"type": "string", "enum": ["ask", "pam", "psk", "qam"]},
+                            "format": {"type": "string", "enum": ["ask", "pam", "psk", "qam", "fsk"]},
                             "order": {"type": "integer", "minimum": 2},
                             "label": {"type": "string"},
                         },

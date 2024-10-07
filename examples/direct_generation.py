@@ -24,7 +24,7 @@ user_burst_list = [
         bandwidth=0.2,
         start=1000,
         duration=50000,
-        sig_type={"label": "BASK", "format": "ask", "order": 2},
+        sig_type={"family": "ldapm", "label": "BASK", "format": "ask", "order": 2},
     )
 ]
 user_burst_list.append(
@@ -33,7 +33,7 @@ user_burst_list.append(
         bandwidth=0.1,
         start=5000,
         duration=8000,
-        sig_type={"label": "QPSK", "format": "psk", "order": 2},
+        sig_type={"family": "ldapm", "label": "64QAM", "format": "qam", "order": 64},
     )
 )
 user_burst_list.append(
@@ -42,7 +42,7 @@ user_burst_list.append(
         bandwidth=0.35,
         start=10000,
         duration=80000,
-        sig_type={"label": "64QAM", "format": "qam", "order": 64},
+        sig_type={"family": "fsk", "label": "4FSK", "format": "fsk", "order": 4},
     )
 )
 
