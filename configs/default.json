@@ -1,27 +1,20 @@
 {
   "generation": {
-    "rand_seed": 1234,
+    "rand_seed": 65436538,
     "pool": 8
   },
   "spectrum": {
     "observation_duration": 100000,
     "sig_types": [
       { "family": "ldapm", "format": "ask", "order": 2, "label": "BASK" },
-      { "family": "ldapm", "format": "ask", "order": 4, "label": "4ASK" },
-      { "family": "ldapm", "format": "ask", "order": 8, "label": "8ASK" },
       { "family": "ldapm", "format": "ask", "order": 16, "label": "16ASK" },
       { "family": "ldapm", "format": "pam", "order": 4, "label": "4PAM" },
-      { "family": "ldapm", "format": "pam", "order": 8, "label": "8PAM" },
       { "family": "ldapm", "format": "pam", "order": 16, "label": "16PAM" },
-      { "family": "ldapm", "format": "psk", "order": 2, "label": "BPSK" },
       { "family": "ldapm", "format": "psk", "order": 4, "label": "QPSK" },
       { "family": "ldapm", "format": "psk", "order": 8, "label": "8PSK" },
       { "family": "ldapm", "format": "psk", "order": 16, "label": "16PSK" },
       { "family": "ldapm", "format": "qam", "order": 16, "label": "16QAM" },
-      { "family": "ldapm", "format": "qam", "order": 64, "label": "64QAM" },
-      { "family": "fsk", "format": "fsk", "order": 2, "label": "2FSK"},
-      { "family": "fsk", "format": "fsk", "order": 4, "label": "4FSK"},
-      { "family": "fsk", "format": "fsk", "order": 8, "label": "8FSK"}
+      { "family": "fsk", "format": "fsk", "order": 4, "label": "4FSK"}
     ],
     "max_signals": 10,
     "allow_collisions_flag": false,
@@ -29,14 +22,14 @@
     "save_modems": false
   },
   "burst_defaults": {
-    "cent_freq": [ -0.4, 0.4 ],
-    "bandwidth": [ 0.01, 0.2 ],
+    "cent_freq": [ -0.3, 0.3 ],
+    "bandwidth": [ 0.01, 0.4 ],
     "start": [ -9000, 90000 ],
     "duration": [ 10000, 100000 ]
   },
   "iq_defaults": {
     "snr": [ 10, 30 ],
-    "mod_index": [ 0.5, 3.0]
+    "mod_index": [ 1.0, 1.0]
   },
   "pulse_shape_defaults": {
     "format": "RRC",
