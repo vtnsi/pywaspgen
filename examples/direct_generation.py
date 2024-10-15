@@ -1,48 +1,35 @@
 """
 An example script for showing how to directly generate burst definition objects for use in iq_datagen to create in-phase/quadrature (IQ) data.
 """
-
 import matplotlib.pyplot as plt
-
-from pywaspgen.burst_datagen import BurstDatagen
-from pywaspgen.burst_def import BurstDef
-from pywaspgen.iq_datagen import IQDatagen
+import pywaspgen
 
 # Instantiate a burst generator object (note: here only to be used for plotting the burst list).
-burst_gen = BurstDatagen()
+burst_gen = pywaspgen.BurstDatagen()
 
 # Instantiate an iq generator object and specify the signal parameter configuration file to use (note: directly setting iq specific signal parameters will be added in a future update).
-iq_gen = IQDatagen("configs/default.json")
+iq_gen = pywaspgen.IQDatagen("configs/default.json")
 
 # In PyWASPGEN, a burst defines the 'extent' and 'type' of signal to be created.
 #   extent - The time/frequency bounds of the signal to be generated.
 #   type - The signal format and associated parameters of the signal to be generated.
 # Here, we create a list of three user-defined signal bursts (for a complete list of the signal parameters and their ranges, see doc/parameters.txt).
 user_burst_list = [
-    BurstDef(
+    pywaspgen.BurstDef(
         cent_freq=0.3,
         bandwidth=0.2,
         start=1000,
         duration=50000,
-        sig_type={"family": "ldapm", "label": "BASK", "format": "ask", "order": 2},
+        sig_type={"type": "ask", "order": 2, "label": "BASK"},
     )
 ]
 user_burst_list.append(
-    BurstDef(
+    pywaspgen.BurstDef(
         cent_freq=-0.3,
         bandwidth=0.1,
         start=5000,
         duration=8000,
-        sig_type={"family": "ldapm", "label": "64QAM", "format": "qam", "order": 64},
-    )
-)
-user_burst_list.append(
-    BurstDef(
-        cent_freq=0.0,
-        bandwidth=0.35,
-        start=10000,
-        duration=80000,
-        sig_type={"family": "fsk", "label": "4FSK", "format": "fsk", "order": 4},
+        sig_type={"type": "qam", "order": 16, "label": "16QAM"},
     )
 )
 

@@ -1,9 +1,9 @@
 import numpy as np
 from scipy.special import erfc
 
-import pywaspgen.modems.digital.ldapm as ldapm
+from pywaspgen.modem.digital.ldapm.ldapm import LDAPM
 
-class QAM(ldapm.LDAPM):
+class QAM(LDAPM):
     """
     Quadrature Amplitude Modulation (QAM) modem class.
     """
@@ -17,7 +17,7 @@ class QAM(ldapm.LDAPM):
         """
         super().__init__(sig_type, pulse_type)
 
-    def __symbol_table_create(self):
+    def _symbol_table_create(self):
         """
         Creates the modem's QAM data symbol table.
         """    
@@ -27,7 +27,7 @@ class QAM(ldapm.LDAPM):
             for kk in range(-max_val, max_val + 1, 2):
                 self.symbol_table.append(k + 1.0j * kk)
 
-    def __get_theory_awgn(self, snr_lin):
+    def _get_theory_awgn(self, snr_lin):
         """
         Calculates the theoretical symbol error rate of the QAM modem when impacted by an Additive White Gaussian Noise (AWGN) channel.
 

@@ -1,9 +1,9 @@
 import numpy as np
 from scipy.stats import norm
 
-import pywaspgen.modems.digital.ldapm.ldapm as ldapm
+from pywaspgen.modem.digital.ldapm.ldapm import LDAPM
 
-class ASK(ldapm.LDAPM):
+class ASK(LDAPM):
     """
     Amplitude Shift Keying (ASK) modem class.
     """
@@ -17,14 +17,14 @@ class ASK(ldapm.LDAPM):
         """
         super().__init__(sig_type, pulse_type)
 
-    def __symbol_table_create(self):
+    def _symbol_table_create(self):
         """
         Creates the modem's ASK data symbol table.
         """        
         for k in range(0, self.order):
             self.symbol_table.append(k)
 
-    def __get_theory_awgn(self, snr_lin):
+    def _get_theory_awgn(self, snr_lin):
         """
         Calculates the theoretical symbol error rate of the ASK modem when impacted by an Additive White Gaussian Noise (AWGN) channel.
 

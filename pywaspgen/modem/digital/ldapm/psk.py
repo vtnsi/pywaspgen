@@ -1,9 +1,9 @@
 import numpy as np
 from scipy.stats import norm
 
-import pywaspgen.modems.digital.ldapm as ldapm
+from pywaspgen.modem.digital.ldapm.ldapm import LDAPM
 
-class PSK(ldapm.LDAPM):
+class PSK(LDAPM):
     """
     Phase Shift Keying (PSK) modem class.
     """
@@ -17,13 +17,13 @@ class PSK(ldapm.LDAPM):
         """
         super().__init__(sig_type, pulse_type)
 
-    def __symbol_table_create(self):
+    def _symbol_table_create(self):
         """
         Creates the modem's PSK data symbol table.
         """        
         self.symbol_table = [(np.cos((2.0 * np.pi * k) / self.order + (np.log2(self.order) - 1.0) * (np.pi / 4.0)) + 1.0j * np.sin((2.0 * np.pi * k) / self.order + (np.log2(self.order) - 1.0) * (np.pi / 4.0))) for k in range(0, self.order)]
 
-    def __get_theory_awgn(self, snr_lin):
+    def _get_theory_awgn(self, snr_lin):
         """
         Calculates the theoretical symbol error rate of the PSK modem when impacted by an Additive White Gaussian Noise (AWGN) channel.
 

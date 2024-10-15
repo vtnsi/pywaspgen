@@ -6,7 +6,7 @@ import numpy as np
 import tqdm
 
 import pywaspgen.impairments as impairments
-import pywaspgen.modems as modems
+import pywaspgen.modem as modem
 
 # In PyWASPGEN, a modem defines the type of communication format used to generate in-phase/quadrature (IQ) data and is typically defined by its 'sig_type' and its 'pulse_type'.
 #   sig_type - Specifies for the given modem the sub-class parameters of the communication format.
@@ -27,7 +27,7 @@ for snr_db in tqdm.trange(snr_db_range[0], snr_db_range[1] + 1):
     outer_deviation = ((H*symbol_rate*(sig_type["order"]-1))/2.0)
 
     # Instantiate the modem object and specifies the signal type and pulse shaping parameters.
-    modem = modems.FSK(outer_deviation, symbol_rate, sig_type)
+    modem = modem.FSK(outer_deviation, symbol_rate, sig_type)
 
     tx_symbols = modem.gen_symbols(num_symbols)         # Generates the digital data symbols to transmit.
     tx_samples = modem.get_samples(tx_symbols)          # Modulates the digital data symbols to get the transmit samples.

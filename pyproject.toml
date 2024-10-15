@@ -28,9 +28,8 @@ description = "Wideband Aggregate SPectrum Generator (WASPGEN)"
 readme = "README.md"
 license = {text = "MIT License"}
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["pywaspgen"]
+[tool.setuptools.package-dir]
+pywaspgen = "pywaspgen"
 
 [tool.black]
 line-length = 1000

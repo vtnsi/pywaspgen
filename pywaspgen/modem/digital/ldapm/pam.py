@@ -1,9 +1,9 @@
 import numpy as np
 from scipy.special import erfc
 
-import pywaspgen.modems.digital.ldapm as ldapm
+from pywaspgen.modem.digital.ldapm.ldapm import LDAPM
 
-class PAM(ldapm.LDAPM):
+class PAM(LDAPM):
     """
     Pulse Amplitude Modulation (PAM) modem class.
     """
@@ -17,7 +17,7 @@ class PAM(ldapm.LDAPM):
         """
         super().__init__(sig_type, pulse_type)
 
-    def __symbol_table_create(self):
+    def _symbol_table_create(self):
         """
         Creates the modem's PAM data symbol table.
         """
@@ -26,7 +26,7 @@ class PAM(ldapm.LDAPM):
             self.symbol_table.append(-2.0 * k + 1.0)
             self.symbol_table.append(2.0 * k - 1.0)
 
-    def __get_theory_awgn(self, snr_lin):
+    def _get_theory_awgn(self, snr_lin):
         """
         Calculates the theoretical symbol error rate of the PAM modem when impacted by an Additive White Gaussian Noise (AWGN) channel.
 
