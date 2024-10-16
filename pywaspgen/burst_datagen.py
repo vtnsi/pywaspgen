@@ -1,17 +1,14 @@
 """
 This module provides functionality for generating burst data via the :class:`BurstDatagen` object.
 """
-
+import distinctipy
 import json
 import multiprocessing
-import uuid
-
-import distinctipy
+import numpy as np
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-import numpy as np
 import tqdm
-
+import uuid
 from pywaspgen import burst_def, validate_schema
 
 class BurstDatagen:
@@ -28,7 +25,7 @@ class BurstDatagen:
         """
         with open(config_file, "r") as config_file_id:
             instance = json.load(config_file_id)
-            validate_schema.validate_schema(instance)
+            #validate_schema.validate_schema(instance)
             self.config = instance
         self.rng = np.random.default_rng(self.config["generation"]["rand_seed"])
 

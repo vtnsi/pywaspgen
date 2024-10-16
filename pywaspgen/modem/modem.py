@@ -11,7 +11,7 @@ class MODEM:
         """
         self.sig_type = sig_type
 
-    def gen_samples(self, num_samples=5):
+    def gen_samples(self, num_samples):
         return self._gen_samples(num_samples)
 
     def get_sim_awgn(self, samples):             

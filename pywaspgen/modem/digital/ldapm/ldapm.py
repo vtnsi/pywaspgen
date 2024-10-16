@@ -35,7 +35,7 @@ class LDAPM(DIGITAL):
         else:
             return np.array([])     
     
-    def __get_symbols(self, samples):
+    def _get_symbols(self, samples):
         """
         Demodulates a modulated LDAPM data sample stream.
 
@@ -48,7 +48,7 @@ class LDAPM(DIGITAL):
         noisy_symbols = np.array(self.pulse_shaper.filter(samples, "decimate"))
         demoded_symbols = np.empty(len(noisy_symbols))
         for k in range(len(noisy_symbols)):
-             demoded_symbols[k] = self.symbol_table[np.abs(noisy_symbols[k] - self.symbol_table).argmin()]
+            demoded_symbols[k] = (np.abs(noisy_symbols[k] - self.symbol_table)).argmin()
         return demoded_symbols
     
     def __set_pulse_shape(self):

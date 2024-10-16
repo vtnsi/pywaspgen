@@ -35,13 +35,13 @@ class IQDatagen:
         Returns:
             float complex, obj: The IQ data of the provided burst definition, the :class:`pywaspgen.modems` object used to create the IQ data.
         """
-        modem = eval("modem." + str(burst.sig_type['type']) + "(burst.sig_type, burst.metadata['pulse_type'])")
+        sig_modem = eval("modem." + str(burst.sig_type['type']) + "(burst.sig_type, burst.metadata['pulse_type'])")
 
-        samples = modem.gen_samples(burst.duration)
+        samples = sig_modem.gen_samples(burst.duration)
         if samples.size != 0:
             samples = impairments.freq_off(samples, burst.cent_freq)
             samples = np.sqrt((10.0 ** (burst.metadata["snr"] / 10.0)) / 2.0) * samples
-        return samples, modem
+        return samples, sig_modem
 
     def gen_batch(self, burst_lists):
         """
@@ -82,7 +82,7 @@ class IQDatagen:
 
         new_burst_list = []
         for burst in burst_list:
-            samples, modem = self._get_iq(burst)
+            samples, sig_modem = self._get_iq(burst)
             burst.duration = len(samples)
             start_iq_idx = max(0, burst.start)
             start_samples_idx = max(0, -burst.start)
@@ -94,7 +94,7 @@ class IQDatagen:
             burst.duration = num_samples
 
             if self.config["spectrum"]["save_modems"]:
-                burst.metadata["modem"] = modem
+                burst.metadata["modem"] = sig_modem
             new_burst_list.append(burst)
 
         return iq_data, new_burst_list

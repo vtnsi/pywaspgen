@@ -1,6 +1,5 @@
 import numpy as np
-from scipy.stats import norm
-
+from scipy.special import erfc
 from pywaspgen.modem.digital.ldapm.ldapm import LDAPM
 
 class ASK(LDAPM):
@@ -34,9 +33,4 @@ class ASK(LDAPM):
         Returns:
             float: The theoretical symbol error rate in an AWGN channel of the ASK modem for an SNR, in dB, specified by ``snr_db``.
         """        
-        if self.order == 2:
-            return norm.sf(np.sqrt(2.0 * snr_lin))
-        elif self.order == 4:
-            return 1.0 - (1.0 - norm.sf(np.sqrt(snr_lin))) ** 2.0
-        else:
-            return 2.0 * norm.sf(np.sqrt(2.0 * snr_lin) * np.sin(np.pi / self.order))
+        return ((self.order - 1.0) / self.order) * erfc(np.sqrt((3.0 / ((self.order**2.0) - 1.0)) * (snr_lin / (2.0 * np.sqrt(np.log2(self.order))))))

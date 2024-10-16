@@ -27,7 +27,10 @@ class DIGITAL(MODEM):
         Returns:
             float complex: A numpy array, of size defined by ``num_symbols``, of random data symbols chosen uniformly from the digital modem's data symbol table.
         """
-        self.generated_symbols = np.random.choice(self.symbol_table, num_symbols)
+        self.generated_symbols_idx = np.random.randint(0, len(self.symbol_table), num_symbols)
+        self.generated_symbols = []
+        for symbol_idx in self.generated_symbols_idx:
+            self.generated_symbols.append(self.symbol_table[symbol_idx])
         return self.generated_symbols
     
     def get_symbols(self, samples):
@@ -52,20 +55,18 @@ class DIGITAL(MODEM):
         self.pulse_type["sps"] = sps
         self.__set_pulse_shape()  
 
-    def _get_symbols(self, samples):
-        return self.__get_symbols(samples)
-
     def symbol_table_create(self):
         """
         Creates the modem's IQ data symbol table of the type specified by ``DIGITAL.sig_type``.
         """
         self.symbol_table = []
         self._symbol_table_create()
+        self.symbol_table = self.symbol_table/np.sqrt(np.mean(np.abs(self.symbol_table)**2.0))
 
-    def _get_sim_awgn(self, samples):             
+    def _get_sim_awgn(self, samples): 
         demoded_symbols = self._get_symbols(samples)
         
         symbol_errors = 0
         for k in range(len(demoded_symbols)):
-            symbol_errors = symbol_errors + (1 - np.equal(self.generated_symbols[k], demoded_symbols[k]))
+            symbol_errors = symbol_errors + (1 - np.equal(self.generated_symbols_idx[k], demoded_symbols[k]))
         return symbol_errors/len(demoded_symbols)
