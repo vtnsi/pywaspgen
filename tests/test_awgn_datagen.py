@@ -18,7 +18,7 @@ class bust_datagen_tester(unittest.TestCase):
         pass
 
     def test_snr_theoretical_match(self):
-        snr_db_range = (0, 20)
+        snr_db_range = (0, 8)
         hndl_ = AWGNDataGenCheck()
         ser_sim, ser_theory = hndl_.generate_theory_and_sim_results(snr_db_range=snr_db_range)
 

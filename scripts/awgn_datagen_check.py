@@ -57,7 +57,7 @@ class AWGNDataGenCheck:
 
 if __name__ == "__main__":
     awgn_hndl = AWGNDataGenCheck()
-    snr_db_range = (0, 20)
+    snr_db_range = (0, 8)
     ser_sim, ser_theory = awgn_hndl.generate_theory_and_sim_results(snr_db_range=snr_db_range)
 
     # Plotting SER Simulation and Theory Curves

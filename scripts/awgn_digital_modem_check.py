@@ -53,7 +53,7 @@ if __name__ == "__main__":
     snr_db_range = (0, 8)
     num_symbols = 100000
 
-    sig_type = {"format": "ask", "order": 8}
+    sig_type = {"format": "qam", "order": 16}
     pulse_type = {"sps": 2.7, "format": "RRC", "params": {"beta": 0.35, "span": 10, "window": ("kaiser", 5.0)}}
 
     hndl_ = AWGNDigitalModemCheck(sig_type=sig_type, pulse_type=pulse_type)
