@@ -26,6 +26,7 @@ class QAM(LDAPM):
         for k in range(-max_val, max_val + 1, 2):
             for kk in range(-max_val, max_val + 1, 2):
                 self.symbol_table.append(k + 1.0j * kk)
+        self.symbol_table = self.symbol_table/np.sqrt(np.mean(np.abs(self.symbol_table)**2.0))
 
     def _get_theory_awgn(self, snr_lin):
         """

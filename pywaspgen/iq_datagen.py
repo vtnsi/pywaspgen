@@ -6,7 +6,7 @@ import multiprocessing
 import numpy as np
 import matplotlib.pyplot as plt
 import tqdm
-from pywaspgen import impairments, modem, validate_schema
+from pywaspgen import impairments, modem
 
 class IQDatagen:
     """
@@ -20,8 +20,7 @@ class IQDatagen:
             config_file (str): The relative file path for the configuration file to be used for generating the IQ data.
         """
         with open(config_file, "r") as config_file_id:
-            instance = json.load(config_file_id)
-            validate_schema.validate_schema(instance)
+            instance = json.load(config_file_id)            
             self.config = instance
         self.rng = np.random.default_rng(self.config["generation"]["rand_seed"])
 
@@ -35,7 +34,17 @@ class IQDatagen:
         Returns:
             float complex, obj: The IQ data of the provided burst definition, the :class:`pywaspgen.modems` object used to create the IQ data.
         """
-        sig_modem = eval("modem." + str(burst.sig_type['type']) + "(burst.sig_type, burst.metadata['pulse_type'])")
+        if burst.sig_type['type'] == 'fsk':
+            Rs = burst.bandwidth/(burst.metadata["modulation_index"]*((burst.sig_type["order"]-1)**2.0)+2.0)
+            deviation = (burst.metadata["modulation_index"]*Rs*(burst.sig_type["order"]-1))/2.0
+
+            samples_per_symbol = int(1/Rs)
+            Rs = 1/samples_per_symbol
+            deviation = (burst.metadata["modulation_index"]*Rs*(burst.sig_type["order"]-1))/2.0
+
+            sig_modem = eval("modem." + str(burst.sig_type['type']) + "(deviation, Rs, samples_per_symbol, burst.sig_type)")
+        else:
+            sig_modem = eval("modem." + str(burst.sig_type['type']) + "(burst.sig_type, burst.metadata['pulse_type'])")
 
         samples = sig_modem.gen_samples(burst.duration)
         if samples.size != 0:
@@ -72,13 +81,17 @@ class IQDatagen:
         iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf)
 
         for k in range(len(burst_list)):
-            snr = rng.uniform(self.config["iq_defaults"]["snr"][0], self.config["iq_defaults"]["snr"][1])
-            beta = (round(100.0 * rng.uniform(self.config["pulse_shape_defaults"]["beta"][0], self.config["pulse_shape_defaults"]["beta"][1])) / 100.0)
-            span = rng.integers(self.config["pulse_shape_defaults"]["span"][0], self.config["pulse_shape_defaults"]["span"][1], endpoint=True)
-            sps = round(10.0 * ((beta + 1.0) / burst_list[k].bandwidth)) / 10.0
-            burst_list[k].bandwidth = (beta + 1.0) / sps
+            snr = rng.uniform(self.config["sig_defaults"]["iq"]["snr"][0], self.config["sig_defaults"]["iq"]["snr"][1])
+            if burst_list[k].sig_type["type"] == 'ask' or burst_list[k].sig_type["type"] == 'psk' or burst_list[k].sig_type["type"] == 'pam' or burst_list[k].sig_type["type"] == 'qam':
+                beta = (round(100.0 * rng.uniform(self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][0], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][1])) / 100.0)
+                span = rng.integers(self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"][0], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"][1], endpoint=True)
+                sps = round(10.0 * ((beta + 1.0) / burst_list[k].bandwidth)) / 10.0
+                burst_list[k].bandwidth = (beta + 1.0) / sps
+                burst_list[k].metadata["pulse_type"] = {"sps": sps, "format": self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["format"], "params": {"beta": beta, "span": span, "window": (self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["window"]["type"], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["window"]["params"])}}
+            else:
+                modulation_index = rng.uniform(self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"][0], self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"][1])
+                burst_list[k].metadata["modulation_index"] = modulation_index
             burst_list[k].metadata["snr"] = snr
-            burst_list[k].metadata["pulse_type"] = {"sps": sps, "format": self.config["pulse_shape_defaults"]["format"], "params": {"beta": beta, "span": span, "window": (self.config["pulse_shape_defaults"]["window"]["type"], self.config["pulse_shape_defaults"]["window"]["params"])}}
 
         new_burst_list = []
         for burst in burst_list:
@@ -93,7 +106,7 @@ class IQDatagen:
             burst.start = start_iq_idx
             burst.duration = num_samples
 
-            if self.config["spectrum"]["save_modems"]:
+            if self.config["sig_defaults"]["save_modems"]:
                 burst.metadata["modem"] = sig_modem
             new_burst_list.append(burst)
 

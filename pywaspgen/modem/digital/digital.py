@@ -61,7 +61,6 @@ class DIGITAL(MODEM):
         """
         self.symbol_table = []
         self._symbol_table_create()
-        self.symbol_table = self.symbol_table/np.sqrt(np.mean(np.abs(self.symbol_table)**2.0))
 
     def _get_sim_awgn(self, samples): 
         demoded_symbols = self._get_symbols(samples)

@@ -7,10 +7,10 @@ from scipy.integrate import quad
 def integrand(y, order, snr_lin):
     return ((1.0-(1.0-(0.5*erfc(y/np.sqrt(2))))**(order-1))*np.exp(-0.5*(y-np.sqrt(2*np.log2(order)*snr_lin))**2.0))/np.sqrt(2*np.pi)
 
-order = 4
+order = 2
 num_symbols = 10000
-BW = np.random.uniform(0.1, 0.5)
-H = np.random.uniform(1.0, 3.0)
+BW = np.random.uniform(0.5, 0.5)
+H = np.random.uniform(1.0, 1.0)
 
 Rs = BW/(H*((order-1)**2.0)+2.0)
 deviation = (H*Rs*(order-1))/2.0
@@ -52,7 +52,7 @@ for snr_db in tqdm.trange(snr_db_range[0], snr_db_range[1] + 1):
     for k in range(num_symbols):
         metric = np.zeros(order)
         for kk in range(order):
-            metric[kk] = np.dot(rx_signal[k*samples_per_symbol:(k+1)*samples_per_symbol],[np.exp(-2.0j * np.pi * (symbol_table[kk]) * x) for x in t[k*samples_per_symbol:(k+1)*samples_per_symbol]])
+            metric[kk] = np.vdot([np.exp(2.0j * np.pi * (symbol_table[kk]) * x) for x in t[k*samples_per_symbol:(k+1)*samples_per_symbol]], rx_signal[k*samples_per_symbol:(k+1)*samples_per_symbol])
         rx_symbols[k] = np.argmax(metric)
 
     ## Simulation Error Rate Calc

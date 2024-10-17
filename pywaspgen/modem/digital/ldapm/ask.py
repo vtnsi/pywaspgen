@@ -22,6 +22,8 @@ class ASK(LDAPM):
         """        
         for k in range(0, self.order):
             self.symbol_table.append(k)
+        self.symbol_table = self.symbol_table/np.sqrt(np.mean(np.abs(self.symbol_table)**2.0))
+
 
     def _get_theory_awgn(self, snr_lin):
         """

@@ -25,6 +25,8 @@ class PAM(LDAPM):
         for k in range(1, int(self.order / 2) + 1):
             self.symbol_table.append(-2.0 * k + 1.0)
             self.symbol_table.append(2.0 * k - 1.0)
+        self.symbol_table = self.symbol_table/np.sqrt(np.mean(np.abs(self.symbol_table)**2.0))
+
 
     def _get_theory_awgn(self, snr_lin):
         """
