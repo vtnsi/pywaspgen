@@ -2,8 +2,9 @@
 This module defines classes for generating modulators and demodulators (modems) for generating in-phase/quadrature (IQ) data of specific communication formats.
 """
 
+from math import erfc
+
 import numpy as np
-from scipy.special import erfc
 from scipy.stats import norm
 
 import pywaspgen.filters as filters
@@ -14,15 +15,7 @@ class LDAPM:
     Linear Digital Amplitude Phase Modulation (LDAPM) modem class.
     """
 
-    def __init__(
-        self,
-        sig_type={"format": "psk", "order": 4},
-        pulse_type={
-            "sps": 2,
-            "format": "RRC",
-            "params": {"beta": 0.35, "span": 10, "window": ("kaiser", 5.0)},
-        },
-    ):
+    def __init__(self, sig_type={"format": "psk", "order": 4}, pulse_type={"sps": 2, "format": "RRC", "params": {"beta": 0.35, "span": 10, "window": ("kaiser", 5.0)}}):
         """
         The constructor for the `LDAPM` class.
 
@@ -80,17 +73,19 @@ class LDAPM:
         self.pulse_type["sps"] = sps
         self.__set_pulse_shape(self)
 
-    def gen_symbols(self, num_symbols):
+    def gen_symbols(self, num_symbols, snr_db):
         """
         Generates a random set of symbols from the modem's IQ data symbol table.
 
         Args:
             num_symbols (int): The number of random IQ data symbols to generate.
+            snr_db (float): The signal-to-noise ratio (SNR), in dB, used to scale the symbols.
 
         Returns:
             float complex: A numpy array, of size defined by ``num_symbols``, of random IQ data symbols chosen uniformly from the modem's IQ data symbol table.
         """
-        self.generated_symbols = np.random.choice(self.symbol_table, num_symbols)
+        snr_lin = 10.0 ** (snr_db / 10.0)
+        self.generated_symbols = np.sqrt(snr_lin) * np.random.choice(self.symbol_table, num_symbols)
         return self.generated_symbols
 
     def get_samples(self, symbols):
@@ -105,19 +100,20 @@ class LDAPM:
         """
         return self.pulse_shaper.filter(symbols, "interpolate")
 
-    def gen_samples(self, num_samples):
+    def gen_samples(self, num_samples, snr_db):
         """
         Generates a random modulated IQ data sample stream of pulse shaped IQ data symbols from the modem's IQ data symbol table.
 
         Args:
             num_samples (int): The length, in samples, of the random modulated IQ data sample stream to generate.
+            snr_db (float): The signal-to-noise ratio (SNR), in dB, used to scale the symbols.
 
         Returns:
             float complex: A numpy array, of size defined by ``num_samples``, of pulse shaped IQ data symbols chosen uniformly from the modem's IQ data symbol table.
         """
         total_symbols = self.pulse_shaper.calc_num_symbols(num_samples)
         if total_symbols >= 1:
-            samples = self.pulse_shaper.filter(self.gen_symbols(total_symbols), "interpolate")
+            samples = self.pulse_shaper.filter(self.gen_symbols(total_symbols, snr_db), "interpolate")
             return samples[0:num_samples]
         else:
             return np.array([])
@@ -134,7 +130,7 @@ class LDAPM:
         """
         return np.array(self.pulse_shaper.filter(samples, "decimate"))
 
-    def get_nearest_symbol(self, symbol):
+    def get_nearest_symbol(self, symbol, snr_db):
         """
         Determines the nearest symbol of the modem's IQ data symbol table to the provided input symbol.
 
@@ -144,8 +140,9 @@ class LDAPM:
         Returns:
             float complex: The symbol of the modem's IQ data symbol table nearest to ``symbol``.
         """
-        idx = np.abs(symbol - self.symbol_table).argmin()
-        return self.symbol_table[idx]
+        snr_lin = 10.0 ** (snr_db / 10.0)
+        idx = np.abs(symbol - np.sqrt(snr_lin) * self.symbol_table).argmin()
+        return np.sqrt(snr_lin) * self.symbol_table[idx]
 
     def get_theory_awgn(self, snr_db):
         """
