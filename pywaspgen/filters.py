@@ -78,7 +78,7 @@ class _Filter:
             if self.pulse_type["sps"] % 1 == 0:
                 return down_samps
             else:
-                return down_samps[0:-1]
+                return down_samps[:-1]
 
     def calc_num_symbols(self, num_samples):
         """

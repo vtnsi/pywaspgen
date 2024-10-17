@@ -44,7 +44,6 @@ class IQDatagen:
         samples = modem.gen_samples(burst.duration, burst.metadata["snr"])
         if samples.size != 0:
             samples = impairments.freq_off(samples, burst.cent_freq)
-            # samples = np.sqrt((10.0 ** (burst.metadata["snr"] / 10.0)) / 2.0) * samples
         return samples, modem
 
     def gen_batch(self, burst_lists):

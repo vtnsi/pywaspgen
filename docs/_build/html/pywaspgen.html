@@ -8,11 +8,11 @@
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
-  
+
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
+
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=5929fcd5"></script>
@@ -22,17 +22,17 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Generation Schema" href="configs.html" />
-    <link rel="prev" title="Welcome to the PyWASPGEN Python Package!" href="readme_link.html" /> 
+    <link rel="prev" title="Welcome to the PyWASPGEN Python Package!" href="readme_link.html" />
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-          
-          
+
+
           <a href="index.html" class="icon icon-home">
             Python Wideband Aggregate SPectrum GENerator (PyWASPGEN)
           </a>
@@ -149,7 +149,7 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+
   <section id="the-pywaspgen-package">
 <h1>The PyWASPGEN Package<a class="headerlink" href="#the-pywaspgen-package" title="Link to this heading"></a></h1>
 <section id="module-pywaspgen.burst_datagen">
@@ -368,14 +368,11 @@
 <p>This module provides functions for adding impairments to in-phase/quadrature (IQ) data.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pywaspgen.impairments.awgn">
-<span class="sig-prename descclassname"><span class="pre">pywaspgen.impairments.</span></span><span class="sig-name descname"><span class="pre">awgn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr_db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywaspgen/impairments.html#awgn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.impairments.awgn" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pywaspgen.impairments.</span></span><span class="sig-name descname"><span class="pre">awgn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywaspgen/impairments.html#awgn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.impairments.awgn" title="Link to this definition"></a></dt>
 <dd><p>Applies Additive White Gaussian Noise (AWGN) to the IQ data <code class="docutils literal notranslate"><span class="pre">samps</span></code>. Assumes the IQ data is normalized to unit average power.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>samps</strong> (<em>float complex</em>) – The IQ data to apply AWGN to.</p></li>
-<li><p><strong>snr_db</strong> (<em>float</em>) – The signal-to-noise ratio (SNR), in dB, of the returned IQ data.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>samps</strong> (<em>float complex</em>) – The IQ data to apply AWGN to.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The input IQ data, <code class="docutils literal notranslate"><span class="pre">samps</span></code>, impaired by AWGN with a SNR (in dB) specified by <code class="docutils literal notranslate"><span class="pre">snr_db</span></code>.</p>
@@ -680,11 +677,14 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pywaspgen.modems.LDAPM.gen_symbols">
-<span class="sig-name descname"><span class="pre">gen_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_symbols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywaspgen/modems.html#LDAPM.gen_symbols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.modems.LDAPM.gen_symbols" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">gen_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_symbols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr_db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywaspgen/modems.html#LDAPM.gen_symbols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.modems.LDAPM.gen_symbols" title="Link to this definition"></a></dt>
 <dd><p>Generates a random set of symbols from the modem’s IQ data symbol table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_symbols</strong> (<em>int</em>) – The number of random IQ data symbols to generate.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_symbols</strong> (<em>int</em>) – The number of random IQ data symbols to generate.</p></li>
+<li><p><strong>snr_db</strong> (<em>float</em>) – The signal-to-noise ratio (SNR), in dB, used to scale the symbols.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A numpy array, of size defined by <code class="docutils literal notranslate"><span class="pre">num_symbols</span></code>, of random IQ data symbols chosen uniformly from the modem’s IQ data symbol table.</p>
@@ -714,11 +714,14 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pywaspgen.modems.LDAPM.gen_samples">
-<span class="sig-name descname"><span class="pre">gen_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywaspgen/modems.html#LDAPM.gen_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.modems.LDAPM.gen_samples" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">gen_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr_db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywaspgen/modems.html#LDAPM.gen_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.modems.LDAPM.gen_samples" title="Link to this definition"></a></dt>
 <dd><p>Generates a random modulated IQ data sample stream of pulse shaped IQ data symbols from the modem’s IQ data symbol table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_samples</strong> (<em>int</em>) – The length, in samples, of the random modulated IQ data sample stream to generate.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_samples</strong> (<em>int</em>) – The length, in samples, of the random modulated IQ data sample stream to generate.</p></li>
+<li><p><strong>snr_db</strong> (<em>float</em>) – The signal-to-noise ratio (SNR), in dB, used to scale the symbols.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A numpy array, of size defined by <code class="docutils literal notranslate"><span class="pre">num_samples</span></code>, of pulse shaped IQ data symbols chosen uniformly from the modem’s IQ data symbol table.</p>
@@ -748,7 +751,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pywaspgen.modems.LDAPM.get_nearest_symbol">
-<span class="sig-name descname"><span class="pre">get_nearest_symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywaspgen/modems.html#LDAPM.get_nearest_symbol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.modems.LDAPM.get_nearest_symbol" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_nearest_symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr_db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywaspgen/modems.html#LDAPM.get_nearest_symbol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.modems.LDAPM.get_nearest_symbol" title="Link to this definition"></a></dt>
 <dd><p>Determines the nearest symbol of the modem’s IQ data symbol table to the provided input symbol.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -802,7 +805,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+
 
 </footer>
         </div>
@@ -813,7 +816,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
 
 </body>
 </html>
