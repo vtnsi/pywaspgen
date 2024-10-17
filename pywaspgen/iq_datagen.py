@@ -41,10 +41,10 @@ class IQDatagen:
             float complex, obj: The IQ data of the provided burst definition, the :class:`pywaspgen.modems` object used to create the IQ data.
         """
         modem = modems.LDAPM(burst.sig_type, burst.metadata["pulse_type"])
-        samples = modem.gen_samples(burst.duration)
+        samples = modem.gen_samples(burst.duration, burst.metadata["snr"])
         if samples.size != 0:
             samples = impairments.freq_off(samples, burst.cent_freq)
-            samples = np.sqrt((10.0 ** (burst.metadata["snr"] / 10.0)) / 2.0) * samples
+            # samples = np.sqrt((10.0 ** (burst.metadata["snr"] / 10.0)) / 2.0) * samples
         return samples, modem
 
     def gen_batch(self, burst_lists):
@@ -73,31 +73,12 @@ class IQDatagen:
         """
         rng = self.rng if data_idx == -1 else np.random.default_rng([data_idx, self.config["generation"]["rand_seed"]])
 
-        iq_data = impairments.awgn(
-            np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle),
-            -np.inf,
-        )
+        iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle))
 
         for k in range(len(burst_list)):
-            snr = rng.uniform(
-                self.config["iq_defaults"]["snr"][0],
-                self.config["iq_defaults"]["snr"][1],
-            )
-            beta = (
-                round(
-                    100.0
-                    * rng.uniform(
-                        self.config["pulse_shape_defaults"]["beta"][0],
-                        self.config["pulse_shape_defaults"]["beta"][1],
-                    )
-                )
-                / 100.0
-            )
-            span = rng.integers(
-                self.config["pulse_shape_defaults"]["span"][0],
-                self.config["pulse_shape_defaults"]["span"][1],
-                endpoint=True,
-            )
+            snr = rng.uniform(self.config["iq_defaults"]["snr"][0], self.config["iq_defaults"]["snr"][1])
+            beta = round(100.0 * rng.uniform(self.config["pulse_shape_defaults"]["beta"][0], self.config["pulse_shape_defaults"]["beta"][1])) / 100.0
+            span = rng.integers(self.config["pulse_shape_defaults"]["span"][0], self.config["pulse_shape_defaults"]["span"][1], endpoint=True)
             sps = round(10.0 * ((beta + 1.0) / burst_list[k].bandwidth)) / 10.0
             burst_list[k].bandwidth = (beta + 1.0) / sps
             burst_list[k].metadata["snr"] = snr

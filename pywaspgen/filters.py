@@ -14,14 +14,7 @@ class _Filter:
     Base class for performing pulse shape filtering of IQ data.
     """
 
-    def __init__(
-        self,
-        pulse_type={
-            "sps": 2,
-            "format": "RRC",
-            "params": {"beta": 0.35, "span": 10, "window": ("kaiser", 5.0)},
-        },
-    ):
+    def __init__(self, pulse_type={"sps": 2, "format": "RRC", "params": {"beta": 0.35, "span": 10, "window": ("kaiser", 5.0)}}):
         """
         The constructor for the `_Filter` class.
 
@@ -73,17 +66,19 @@ class _Filter:
             float complex: The input IQ data, ``data``, after filtering of type defined by the pulse shaping filter of type ``self.pulse_type``.
         """
         if type == "interpolate":
-            up_samps = np.convolve(self.__upsample(data), self.taps, "full")
+            up_samps = np.convolve(self.__upsample(np.sqrt(self.down) * data), self.taps, "full")
             down_samps = signal.resample_poly(up_samps, 1, self.down, window=self.pulse_type["params"]["window"])
-            return down_samps / (np.sqrt(np.mean(np.abs(down_samps) ** 2.0) * (self.pulse_type["sps"] / 2.0)))
+            scaled_samps = down_samps
+            return scaled_samps
+
         elif type == "decimate":
-            up_samps = signal.resample_poly(data, self.down, 1, window=self.pulse_type["params"]["window"])
+            up_samps = signal.resample_poly(data / np.sqrt(self.down), self.down, 1, window=self.pulse_type["params"]["window"])
             conv_samps = np.convolve(up_samps, self.taps, "full")
             down_samps = self.__downsample(conv_samps)
             if self.pulse_type["sps"] % 1 == 0:
-                return down_samps / (np.sqrt(np.mean(np.abs(down_samps) ** 2.0)))
+                return down_samps
             else:
-                return down_samps[0:-1] / (np.sqrt(np.mean(np.abs(down_samps) ** 2.0)))
+                return down_samps[0:-1]
 
     def calc_num_symbols(self, num_samples):
         """

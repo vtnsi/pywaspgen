@@ -32,7 +32,7 @@ license = {text = "MIT License"}
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["pywaspgen"]
+include = ["pywaspgen", "scripts"]
 
 
 [tool.black]

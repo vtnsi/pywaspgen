@@ -6,7 +6,7 @@
   "spectrum": {
     "observation_duration": 200000,
     "sig_types": [
-      { "format": "qam", "order": 64, "label": "64QAM" }
+      { "format": "ask", "order": 16, "label": "8ASK" }
     ],
     "max_signals": 1,
     "allow_collisions_flag": false,
