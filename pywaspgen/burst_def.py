@@ -47,6 +47,9 @@ class BurstDef:
         """
         return self.cent_freq + self.bandwidth / 2.0
 
+    def get_center_freq(self):
+        return self.cent_freq
+
     def get_mid_time(self):
         """
         Returns:
@@ -60,6 +63,22 @@ class BurstDef:
             int: The end time of the burst (in seconds).
         """
         return self.start + self.duration
+
+    def get_start_time(self):
+        """
+        Returns:
+           int: The start time of the burst (in seconds).
+        """
+        return self.start
+
+    def get_meta_uuid(self):
+        return self.metadata["UUID"]
+
+    def get_meta_data(self):
+        return self.metadata
+
+    def get_meta_label(self) -> str:
+        return self.sig_type["label"]
 
     def __repr__(self):
         return f"\nUUID: {self.metadata['UUID']} - {self.sig_type['label']} burst with center frequency: {self.cent_freq:.3f}, bandwidth: {self.bandwidth:.3f}, start time: {self.start}, duration: {self.duration}, and metadata: {self.metadata}"

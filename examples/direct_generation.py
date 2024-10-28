@@ -9,7 +9,7 @@ from pywaspgen.burst_def import BurstDef
 from pywaspgen.iq_datagen import IQDatagen
 
 # Instantiate a burst generator object (note: here only to be used for plotting the burst list).
-burst_gen = BurstDatagen()
+burst_gen = BurstDatagen("configs/default.json")
 
 # Instantiate an iq generator object and specify the signal parameter configuration file to use (note: directly setting iq specific signal parameters will be added in a future update).
 iq_gen = IQDatagen("configs/default.json")
@@ -20,7 +20,7 @@ iq_gen = IQDatagen("configs/default.json")
 # Here, we create a list of three user-defined signal bursts (for a complete list of the signal parameters and their ranges, see doc/parameters.txt).
 user_burst_list = [
     BurstDef(
-        cent_freq=0.3,
+        cent_freq=0.0,
         bandwidth=0.2,
         start=1000,
         duration=50000,
@@ -29,7 +29,7 @@ user_burst_list = [
 ]
 user_burst_list.append(
     BurstDef(
-        cent_freq=-0.3,
+        cent_freq=-0.0,
         bandwidth=0.1,
         start=5000,
         duration=8000,
@@ -47,16 +47,18 @@ user_burst_list.append(
 )
 
 # Print and plot the list of user-defined signal bursts (note that each burst is given a universally unique identifier).
-print("\nUser-Defined Burst List:")
-print(user_burst_list)
-burst_gen.plot_burstdata(user_burst_list)
-plt.show()
+# print("\nUser-Defined Burst List:")
+# print(user_burst_list)
+# burst_gen.plot_burstdata()#user_burst_list)
+# plt.show()
+
+burst_list = burst_gen.gen_burstlist()
 
 # In PyWASPGEN, synthetic radio frequency captures are provided in complex-baseband format where the real-component of the captures represent the in-phase components
 # and the imaginary-components represent the quadrature components (https://en.wikipedia.org/wiki/Baseband#Equivalent_baseband_signal).
 
 # Here, we create the radio frequency capture from the user-defined signal burst list created above.
-iq_data, updated_burst_list = iq_gen.gen_iqdata(user_burst_list)
+iq_data, updated_burst_list = iq_gen.gen_iqdata(burst_list)
 
 # Print the returned burst list and plot the spectrogram of the created radio frequency capture with and without the burst metadata overlaid.
 print(updated_burst_list)
