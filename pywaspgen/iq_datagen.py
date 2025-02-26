@@ -1,17 +1,22 @@
 """
 This module provides functionality for generating in-phase/quadrature(IQ) data from bursts via the :class:`IQDatagen` object.
 """
+
 import json
 import multiprocessing
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 import tqdm
-from pywaspgen import impairments, modem
+
+from pywaspgen import impairments
+
 
 class IQDatagen:
     """
     Used to create in-phase/quadrature (IQ) data given burst definition objects, of type :class:`pywaspgen.burst_def.BurstDef`.
     """
+
     def __init__(self, config_file="configs/default.json"):
         """
         The constructor for the `IQDatagen` class.
@@ -20,7 +25,7 @@ class IQDatagen:
             config_file (str): The relative file path for the configuration file to be used for generating the IQ data.
         """
         with open(config_file, "r") as config_file_id:
-            instance = json.load(config_file_id)            
+            instance = json.load(config_file_id)
             self.config = instance
         self.rng = np.random.default_rng(self.config["generation"]["rand_seed"])
 
@@ -34,17 +39,16 @@ class IQDatagen:
         Returns:
             float complex, obj: The IQ data of the provided burst definition, the :class:`pywaspgen.modems` object used to create the IQ data.
         """
-        if burst.sig_type['type'] == 'fsk':
-            Rs = burst.bandwidth/(burst.metadata["modulation_index"]*((burst.sig_type["order"]-1)**2.0)+2.0)
-            deviation = (burst.metadata["modulation_index"]*Rs*(burst.sig_type["order"]-1))/2.0
+        if burst.sig_type["type"] == "fsk":
+            Rs = burst.bandwidth / (burst.metadata["modulation_index"] * ((burst.sig_type["order"] - 1) ** 2.0) + 2.0)
+            deviation = (burst.metadata["modulation_index"] * Rs * (burst.sig_type["order"] - 1)) / 2.0
 
-            samples_per_symbol = int(1/Rs)
-            Rs = 1/samples_per_symbol
-            deviation = (burst.metadata["modulation_index"]*Rs*(burst.sig_type["order"]-1))/2.0
+            sps = int(1 / Rs)
+            deviation = (burst.metadata["modulation_index"] * (1 / sps) * (burst.sig_type["order"] - 1)) / 2.0
 
-            sig_modem = eval("modem." + str(burst.sig_type['type']) + "(deviation, Rs, samples_per_symbol, burst.sig_type)")
+            sig_modem = eval("modem." + str(burst.sig_type["type"]) + "(deviation, sps, burst.sig_type)")
         else:
-            sig_modem = eval("modem." + str(burst.sig_type['type']) + "(burst.sig_type, burst.metadata['pulse_type'])")
+            sig_modem = eval("modem." + str(burst.sig_type["type"]) + "(burst.sig_type, burst.metadata['pulse_type'])")
 
         samples = sig_modem.gen_samples(burst.duration)
         if samples.size != 0:
@@ -82,8 +86,8 @@ class IQDatagen:
 
         for k in range(len(burst_list)):
             snr = rng.uniform(self.config["sig_defaults"]["iq"]["snr"][0], self.config["sig_defaults"]["iq"]["snr"][1])
-            if burst_list[k].sig_type["type"] == 'ask' or burst_list[k].sig_type["type"] == 'psk' or burst_list[k].sig_type["type"] == 'pam' or burst_list[k].sig_type["type"] == 'qam':
-                beta = (round(100.0 * rng.uniform(self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][0], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][1])) / 100.0)
+            if burst_list[k].sig_type["type"] == "ask" or burst_list[k].sig_type["type"] == "psk" or burst_list[k].sig_type["type"] == "pam" or burst_list[k].sig_type["type"] == "qam":
+                beta = round(100.0 * rng.uniform(self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][0], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][1])) / 100.0
                 span = rng.integers(self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"][0], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"][1], endpoint=True)
                 sps = round(10.0 * ((beta + 1.0) / burst_list[k].bandwidth)) / 10.0
                 burst_list[k].bandwidth = (beta + 1.0) / sps

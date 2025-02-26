@@ -1,22 +1,22 @@
 {
-  "generation": 
+  "generation":
   {
     "rand_seed": 1337,
     "pool": 8,
-    "max_attempts": 100  
+    "max_attempts": 100
   },
-  "spectrum": 
+  "spectrum":
   {
     "observation_duration": 200000,
-    "sig_types": [{ "type": "fsk", "order": 4, "label": "BFSK" }],
+    "sig_types": [{ "type": "fsk", "order": 2, "label": "BFSK" }],
     "max_signals": 1,
     "allow_collisions_flag": false,
     "save_modems": true
   },
   "sig_defaults":
-  {    
+  {
     "save_modems": true,
-    "burst": 
+    "burst":
     {
       "cent_freq": [0.0, 0.0],
       "bandwidth": [0.5, 0.5],
@@ -26,19 +26,19 @@
     "iq":
     {
       "snr": [0, 20],
-      "ldapm": 
+      "ldapm":
       {
         "pulse_shape":
         {
           "format": "RRC",
           "beta": [0.1, 0.9],
           "span": [10, 20],
-          "window": 
+          "window":
           {
             "type": "kaiser",
             "params": 5
-          }  
-        }    
+          }
+        }
       },
       "fsk":
       {
@@ -47,6 +47,6 @@
     }
   },
   "sig_overrides":
-  {  
-  }  
+  {
+  }
 }

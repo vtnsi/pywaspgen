@@ -1,5 +1,16 @@
-The PyWASPGEN Package
-=====================
+pywaspgen package
+=================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pywaspgen.modem
+
+Submodules
+----------
 
 pywaspgen.burst\_datagen module
 -------------------------------
@@ -17,18 +28,18 @@ pywaspgen.burst\_def module
    :undoc-members:
    :show-inheritance:
 
-pywaspgen.impairments module
-----------------------------
-
-.. automodule:: pywaspgen.impairments
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pywaspgen.filters module
 ------------------------
 
 .. automodule:: pywaspgen.filters
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pywaspgen.impairments module
+----------------------------
+
+.. automodule:: pywaspgen.impairments
    :members:
    :undoc-members:
    :show-inheritance:
@@ -41,10 +52,18 @@ pywaspgen.iq\_datagen module
    :undoc-members:
    :show-inheritance:
 
-pywaspgen.modems module
------------------------
+pywaspgen.validate\_schema module
+---------------------------------
 
-.. automodule:: pywaspgen.modems
+.. automodule:: pywaspgen.validate_schema
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pywaspgen
    :members:
    :undoc-members:
    :show-inheritance:
