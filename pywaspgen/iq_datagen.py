@@ -46,9 +46,9 @@ class IQDatagen:
             sps = int(1 / Rs)
             deviation = (burst.metadata["modulation_index"] * (1 / sps) * (burst.sig_type["order"] - 1)) / 2.0
 
-            sig_modem = eval("modem." + str(burst.sig_type["type"]) + "(deviation, sps, burst.sig_type)")
+            sig_modem = getattr(modem, burst.sig_type["type"])(deviation, sps, burst.sig_type)
         else:
-            sig_modem = eval("modem." + str(burst.sig_type["type"]) + "(burst.sig_type, burst.metadata['pulse_type'])")
+            sig_modem = getattr(modem, burst.sig_type["type"])(burst.sig_type, burst.metadata['pulse_type'])
 
         samples = sig_modem.gen_samples(burst.duration)
         if samples.size != 0:
