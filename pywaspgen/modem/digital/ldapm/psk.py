@@ -7,7 +7,7 @@ class PSK(LDAPM):
     """
     Phase Shift Keying (PSK) modem class.
     """
-    def __init__(self, sig_type, pulse_type):
+    def __init__(self, burst):
         """
         The constructor for the `PSK` class.
 
@@ -15,7 +15,7 @@ class PSK(LDAPM):
             sig_type (dict): The signal type of the PSK modem.
             pulse_type (dict): The pulse shape metadata of the PSK modem.
         """
-        super().__init__(sig_type, pulse_type)
+        super().__init__(burst)
 
     def _symbol_table_create(self):
         """

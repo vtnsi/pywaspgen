@@ -8,15 +8,15 @@ class DIGITAL(MODEM):
     Digital modem base class.
     """
 
-    def __init__(self, sig_type):
+    def __init__(self, burst):
         """
         The constructor for the base `DIGITAL` class.
 
         Args:
             sig_type (dict): The signal type of the digital modem.
         """
-        super().__init__(sig_type)
-        self.order = sig_type["order"]
+        super().__init__(burst)
+        self.order = burst.sig_type["order"]
         self.symbol_table_create()
 
     def gen_symbols(self, num_symbols):

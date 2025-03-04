@@ -7,7 +7,7 @@ class LDAPM(DIGITAL):
     """
     Linear Digital Amplitude Phase Modulation (LDAPM) modem base class.
     """
-    def __init__(self, sig_type, pulse_type):
+    def __init__(self, burst):
         """
         The constructor for the base `LDAPM` class.
 
@@ -15,10 +15,20 @@ class LDAPM(DIGITAL):
             sig_type (dict): The signal type of the LDAPM modem.
             pulse_type (dict): The pulse shape metadata of the LDAPM modem.
         """
-        super().__init__(sig_type)
-        self.pulse_type = pulse_type
-        self.__set_pulse_shape()     
-        
+        super().__init__(burst)
+
+        self._update_burst_metadata(burst)
+        self.pulse_type = burst.metadata["pulse_type"]
+        self.__set_pulse_shape()
+
+    def _update_burst_metadata(self, burst):
+        rng = np.random.default_rng(42)
+        beta = round(100.0 * rng.uniform(*burst.metadata["pulse_shape"]["beta"])) / 100.0
+        span = rng.integers(*burst.metadata["pulse_shape"]["span"], endpoint=True)
+        sps = round(10.0 * ((beta + 1.0) / burst.bandwidth)) / 10.0
+        burst.bandwidth = (beta + 1.0) / sps
+        burst.metadata["pulse_type"] = {"sps": sps, "format": burst.metadata["pulse_shape"]["format"], "params": {"beta": beta, "span": span, "window": (burst.metadata["pulse_shape"]["window"]["type"], burst.metadata["pulse_shape"]["window"]["params"])}}
+
     def _gen_samples(self, num_samples):
         """
         Generates a random modulated LDAPM data sample stream of pulse shaped LDAPM data symbols from the LDAPM modem's data symbol table.
