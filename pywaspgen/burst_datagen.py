@@ -1,19 +1,15 @@
 """
 This module provides functionality for generating burst data via the :class:`BurstDatagen` object.
 """
-
+import distinctipy
 import json
 import multiprocessing
-import uuid
-
-import distinctipy
+import numpy as np
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-import numpy as np
 import tqdm
-
-from pywaspgen import burst_def, validate_schema
-
+import uuid
+from pywaspgen import burst_def
 
 class BurstDatagen:
     """
@@ -29,7 +25,6 @@ class BurstDatagen:
         """
         with open(config_file, "r") as config_file_id:
             instance = json.load(config_file_id)
-            validate_schema.validate_schema(instance)
             self.config = instance
         self.rng = np.random.default_rng(self.config["generation"]["rand_seed"])
 
@@ -66,6 +61,33 @@ class BurstDatagen:
             return True
         return False
 
+    def __get_random(self, rng, sig_type, parameter):
+        """
+        Generates a random parameter for the :class:`pywaspgen.burst_def.BurstDef` object.
+
+        Args:
+            rng (obj): A numpy random generator object used by the random generators.
+            sig_type (dict): The signal type of the burst to generate the random burst ``parameter`` for.
+            parameter (str):  The parameter of the :class:`pywaspgen.burst_def.BurstDef` object to get a random value for.
+
+        Returns:
+            int/float: The random value for the ``parameter`` of the :class:`pywaspgen.burst_def.BurstDef` object.
+        """        
+        override = 0
+        if sig_type["label"] in self.config["sig_overrides"]:
+            if "burst" in self.config["sig_overrides"][sig_type["label"]]:
+                if parameter in self.config["sig_overrides"][sig_type["label"]]["burst"]:
+                    override = 1
+        if override == 1:
+            range = self.config["sig_overrides"][sig_type["label"]]["burst"][parameter]
+        else:
+            range = self.config["sig_defaults"]["burst"][parameter]
+
+        if type(range[0]).__name__ == "float":
+            return rng.uniform(range[0], range[1])
+        elif type(range[0]).__name__ == "int":
+            return rng.integers(range[0], range[1], endpoint=True)
+
     def gen_burst(self, rng=None):
         """
         Generates a random :class:`pywaspgen.burst_def.BurstDef` object.
@@ -77,15 +99,14 @@ class BurstDatagen:
             obj: A :class:`pywaspgen.burst_def.BurstDef` object with random parameters in ranges specified by the configuration file.
         """
         rng = rng or self.rng
-
         sig_type = self.config["spectrum"]["sig_types"][rng.choice(len(self.config["spectrum"]["sig_types"]))]
-        sig_type_config = self.config["burst_overrides"][sig_type["label"]] if "burst_overrides" in self.config and sig_type["label"] in self.config["burst_overrides"] else self.config["burst_defaults"]
 
-        cent_freq = rng.uniform(sig_type_config["cent_freq"][0], sig_type_config["cent_freq"][1])
-        bandwidth = rng.uniform(sig_type_config["bandwidth"][0], sig_type_config["bandwidth"][1])
-        start = rng.integers(sig_type_config["start"][0], sig_type_config["start"][1], endpoint=True)
-        duration = rng.integers(sig_type_config["duration"][0], sig_type_config["duration"][1], endpoint=True)
-        metadata = {"UUID": uuid.UUID(bytes=rng.bytes(16), version=4)}
+        cent_freq = self.__get_random(rng, sig_type, "cent_freq")
+        bandwidth = self.__get_random(rng, sig_type, "bandwidth")
+        start = self.__get_random(rng, sig_type, "start")
+        duration = self.__get_random(rng, sig_type, "duration")
+                
+        metadata = {"UUID": uuid.UUID(bytes=rng.bytes(16), version=4)}        
         return burst_def.BurstDef(cent_freq, bandwidth, start, duration, sig_type, metadata)
 
     def gen_burstlist(self, burst_idx=-1):
@@ -111,7 +132,7 @@ class BurstDatagen:
                 trial_count = 0
             else:
                 trial_count += 1
-            if trial_count == self.config["spectrum"]["max_attempts"]:
+            if trial_count == self.config["generation"]["max_attempts"]:
                 stop_gen = True
             if sig_count == self.config["spectrum"]["max_signals"]:
                 stop_gen = True
