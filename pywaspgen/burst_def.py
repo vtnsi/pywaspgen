@@ -4,7 +4,6 @@ This module defines the structure and behavior of bursts via the :class:`BurstDe
 
 import uuid
 
-
 class BurstDef:
     """
     Used to create burst definition objects that specify the time and frequency extent of a burst as well as the burst's metadata. These objects are passed as input to :class:`pywaspgen.iq_datagen.IQDatagen` to create in-phase/quadrature (IQ) data.
