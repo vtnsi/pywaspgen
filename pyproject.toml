@@ -15,7 +15,9 @@ dependencies = [
         "sphinx",
         "sphinx-rtd-theme",
         "sphinx-jsonschema",
-        "tqdm"
+        "tqdm",
+        "pytest",
+        "pre-commit"
 ]
 requires-python = ">= 3.8"
 authors = [
