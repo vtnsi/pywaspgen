@@ -53,7 +53,7 @@ SCHEMA = {
         },
         "iq_defaults": {
             "type": "object",
-            "properties": {"snr": {"type": "array", "items": {"type": "number", "minimum": 0}}},
+            "properties": {"snr": {"type": "array", "items": {"type": "number"}}},
         },
         "pulse_shape_defaults": {
             "type": "object",
