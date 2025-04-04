@@ -51,6 +51,7 @@ class IQDatagen:
             sig_modem = getattr(modem, burst.sig_type["type"])(burst.sig_type, burst.metadata['pulse_type'])
 
         samples = sig_modem.gen_samples(burst.duration)
+        samples = [abs(burst.metadata["H"])*s for s in samples]
         if samples.size != 0:
             samples = impairments.freq_off(samples, burst.cent_freq)
             samples = np.sqrt((10.0 ** (burst.metadata["snr"] / 10.0)) / 2.0) * samples
