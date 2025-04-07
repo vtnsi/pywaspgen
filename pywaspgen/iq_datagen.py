@@ -70,7 +70,7 @@ class IQDatagen:
         with multiprocessing.Pool(self.config["generation"]["pool"]) as p:
             return list(zip(*list(p.starmap(self.gen_iqdata, tqdm.tqdm(zip(burst_lists, range(len(burst_lists))), total=len(burst_lists))))))
 
-    def gen_iqdata(self, burst_list, data_idx=-1):
+    def gen_iqdata(self, burst_list, fading_list, data_idx=-1):
         """
         Generates a random aggregate IQ data from the provided burst_list with modem parameters randomized based on ranges specified by the configuration file.
 
@@ -97,6 +97,7 @@ class IQDatagen:
                 modulation_index = rng.uniform(self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"][0], self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"][1])
                 burst_list[k].metadata["modulation_index"] = modulation_index
             burst_list[k].metadata["snr"] = snr
+            burst_list[k].metadata["H"] = fading_list[k]
 
         new_burst_list = []
         for burst in burst_list:
@@ -114,7 +115,7 @@ class IQDatagen:
             if self.config["sig_defaults"]["save_modems"]:
                 burst.metadata["modem"] = sig_modem
             new_burst_list.append(burst)
-
+            
         return iq_data, new_burst_list
 
     def plot_iqdata(self, iq_data, ax=[]):
