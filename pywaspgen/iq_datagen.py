@@ -100,6 +100,8 @@ class IQDatagen:
         new_burst_list = []
         for burst in burst_list:
             samples, sig_modem = self._get_iq(burst)
+            print(10*np.log10(np.mean(np.abs(samples)**2)))
+
             burst.duration = len(samples)
             start_iq_idx = max(0, burst.start)
             start_samples_idx = max(0, -burst.start)
