@@ -53,9 +53,7 @@ class IQDatagen:
         samples = sig_modem.gen_samples(burst.duration)
         if samples.size != 0:
             samples = impairments.freq_off(samples, burst.cent_freq)
-            print('SNR est before: ', 10*np.log10(np.mean(np.abs(np.sqrt(sps)*samples)**2)))
             samples = np.sqrt((10.0 ** (burst.metadata["snr"] / 10.0)) / 2.0) * samples
-            print('SNR est after: ', 10*np.log10(np.mean(np.abs(np.sqrt(sps)*samples)**2)))
         return samples, sig_modem
 
     def gen_batch(self, burst_lists):
@@ -102,7 +100,7 @@ class IQDatagen:
         new_burst_list = []
         for burst in burst_list:
             samples, sig_modem = self._get_iq(burst)
-            print('SNR est: ', 10*np.log10(np.mean(np.abs((sps)*samples)**2)))
+            print('SNR est: ', 10*np.log10(np.mean(np.abs(np.sqrt(sig_modem.sps)*samples)**2)))
 
             burst.duration = len(samples)
             start_iq_idx = max(0, burst.start)
