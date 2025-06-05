@@ -34,18 +34,16 @@ user_burst_list.append(
 )
 
 # Print and plot the list of user-defined signal bursts (note that each burst is given a universally unique identifier).
-# print("\nUser-Defined Burst List:")
-# print(user_burst_list)
-# burst_gen.plot_burstdata()#user_burst_list)
-# plt.show()
-
-burst_list = burst_gen.gen_burstlist()
+print("\nUser-Defined Burst List:")
+print(user_burst_list)
+burst_gen.plot_burstdata(user_burst_list)
+plt.show()
 
 # In PyWASPGEN, synthetic radio frequency captures are provided in complex-baseband format where the real-component of the captures represent the in-phase components
 # and the imaginary-components represent the quadrature components (https://en.wikipedia.org/wiki/Baseband#Equivalent_baseband_signal).
 
 # Here, we create the radio frequency capture from the user-defined signal burst list created above.
-iq_data, updated_burst_list = iq_gen.gen_iqdata(burst_list)
+iq_data, updated_burst_list = iq_gen.gen_iqdata(user_burst_list)
 
 # Print the returned burst list and plot the spectrogram of the created radio frequency capture with and without the burst metadata overlaid.
 print(updated_burst_list)

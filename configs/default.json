@@ -8,25 +8,20 @@
   "spectrum": 
   {
     "observation_duration": 100000,
-    "sig_types": [
-      { "format": "ask", "order": 2, "label": "BASK" },
-      { "format": "ask", "order": 4, "label": "4ASK" },
-      { "format": "ask", "order": 8, "label": "8ASK" },
-      { "format": "ask", "order": 16, "label": "16ASK" },
-      { "format": "pam", "order": 4, "label": "4PAM" },
-      { "format": "pam", "order": 8, "label": "8PAM" },
-      { "format": "pam", "order": 16, "label": "16PAM" },
-      { "format": "psk", "order": 2, "label": "BPSK" },
-      { "format": "psk", "order": 4, "label": "QPSK" },
-      { "format": "psk", "order": 8, "label": "8PSK" },
-      { "format": "psk", "order": 16, "label": "16PSK" },
-      { "format": "qam", "order": 16, "label": "16QAM" },
-      { "format": "qam", "order": 64, "label": "64QAM" }
-    ],
-    "max_signals": 1,
-    "allow_collisions_flag": false,
-    "max_attempts": 100,
-    "save_modems": false
+    "sig_types": 
+      [
+        {"label": "BASK", "type": "ask", "order": 2},
+        {"label": "16ASK", "type": "ask", "order": 16},
+        {"label": "4PAM", "type": "pam", "order": 4},
+        {"label": "16PAM", "type": "pam", "order": 16},
+        {"label": "QPSK", "type": "psk", "order": 4},
+        {"label": "8PSK", "type": "psk", "order": 8},
+        {"label": "16PSK", "type": "psk", "order": 16},
+        {"label": "16QAM", "type": "qam", "order": 16},
+        {"label": "ALT-QPSK", "type": "psk", "order": 4}
+      ],
+    "max_signals": 10,
+    "allow_collisions_flag": false
   },
   "sig_defaults":
   {    
