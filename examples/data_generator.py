@@ -3,13 +3,12 @@ An example script for showing how to ranomdly generate burst definition objects 
 """
 
 import argparse
-import multiprocessing
 import pickle
 import signal
-from itertools import repeat
 from pathlib import Path
 
 import numpy as np
+from tqdm import tqdm
 
 import pywaspgen.impairments as impairments
 from pywaspgen.burst_datagen import BurstDatagen
@@ -51,72 +50,46 @@ def parse_args():
 
 
 def _gen_save_off(burst_entry, iq_data):
-    corrected_iq_data = iq_data[burst_entry.get_start_time() : burst_entry.get_end_time()]  # Corrects the sample offset of the received samples.
-    corrected_iq_data = impairments.freq_off(corrected_iq_data, -burst_entry.get_center_freq())  # Corrects the frequency offset of the received samples.
+    """
+    Illustrates saving the meta data and the RAW IQ for each generate signal.
+    We've assumed perfect isolation and shifting down to baseband.
+    """
 
-    # Save IQ
-    unique_id = str(burst_entry.get_meta_uuid())
-    # print(f'UUID: {unique_id}')
-    # Assume the Following Structure
-    # <datapath>/meta
-    # <datapath>/iq
+    for b in burst_entry:
+        corrected_iq_data = iq_data[b.get_start_time() : b.get_end_time()]  # Corrects the sample offset of the received samples.
+        corrected_iq_data = impairments.freq_off(corrected_iq_data, -b.get_center_freq())  # Corrects the frequency offset of the received samples.
 
-    np.save(args.folder_path_out + "/iq/" + unique_id, corrected_iq_data)
-    with open(args.folder_path_out + "/meta/" + unique_id + ".pkl", "wb") as f:
-        pickle.dump(burst_entry, f)
+        # Save IQ
+        unique_id = str(b.get_meta_uuid())
+        # print(f'UUID: {unique_id}')
+        # Assume the Following Structure
+        # <datapath>/meta
+        # <datapath>/iq
+
+        np.save(args.folder_path_out + "/iq/" + unique_id, corrected_iq_data)
+        with open(args.folder_path_out + "/meta/" + unique_id + ".pkl", "wb") as f:
+            pickle.dump(b, f)
 
 
 def main(args):
     # Instantiate a burst generator object and specify the signal parameter configuration file to use.
-    burst_gen = BurstDatagen("configs/default.json")
+    burst_gen = BurstDatagen(args.config_file)
     # Instantiate an iq generator object and specify the signal parameter configuration file to use.
-    iq_gen = IQDatagen("configs/default.json")
+    iq_gen = IQDatagen(args.config_file)
 
-    counter = 0
+    burst_list_complete = []
+    # Compile a burst listing
+    print("Compiling Burst Listing --- This may take time depending on number of iterations.")
+    for i in range(args.iterations):
+        burst_list_complete.append(burst_gen.gen_burstlist())
+    print("Burst Listing Completed.\n")
+    print("Beginning IQ Generation with multiprocessing. \n Adjust the generation:pool parameter to increase/decrease threading.\n Again this may take time\n")
+    iq_data, updated_burst_list = iq_gen.gen_batch(burst_list_complete)
 
-    # create a default process pool
-    pool = multiprocessing.Pool(args.num_workers)
-
-    while is_alive and counter < args.iterations:
-        # Generate Batch of Bursts
-        burst_list = burst_gen.gen_burstlist()
-        # Here, we create the radio frequency capture from the random signal burst list created above.
-        iq_data, updated_burst_list = iq_gen.gen_iqdata(burst_list=burst_list)
-
-        pool.starmap(_gen_save_off, zip(updated_burst_list, repeat(iq_data)))
-
-        if counter % 10 == 0 and counter > 0:
-            print(f"------ Iteration {counter} of {args.iterations} ------ \n")
-
-        """
-
-        for burst_entry in updated_burst_list:
-
-            #print(f'Burst Entry: {burst_entry} : {burst_entry.start} : {burst_entry.start + burst_entry.duration}')
-            # Here is where we could permute the 'boxed' IQ for a known CF shift or Time Shift
-            corrected_iq_data = iq_data[burst_entry.get_start_time() : burst_entry.get_end_time()]  # Corrects the sample offset of the received samples.
-            corrected_iq_data = impairments.freq_off(corrected_iq_data, -burst_entry.get_center_freq())  # Corrects the frequency offset of the received samples.
-
-            # Save IQ
-            unique_id = str(burst_entry.get_meta_uuid())
-            #print(f'UUID: {unique_id}')
-            # Assume the Following Structure
-            # <datapath>/meta
-            # <datapath>/iq
-
-            np.save(args.folder_path_out+'/iq/'+ unique_id,corrected_iq_data)
-            with open(args.folder_path_out+'/meta/'+ unique_id + '.pkl', 'wb') as f:
-                pickle.dump(burst_entry, f)
-        """
-        # pool.join()
-
-        counter = counter + 1
-
-    pool.close()
-    # block until all tasks are complete and processes close
-    pool.join()
-    print("Shutting down the data generations now \n")
-    print(f"Data is located in {args.folder_path_out} \n")
+    # Save off
+    print("Saving off IQ and meta data for each burst.\n")
+    for i in tqdm(range(len(updated_burst_list))):
+        _gen_save_off(burst_entry=updated_burst_list[i], iq_data=iq_data[i])
 
 
 if __name__ == "__main__":
