@@ -1,5 +1,5 @@
 """
-An example script for showing how to ranomdly generate burst definition objects using burst_datagen for use in iq_datagen to create in-phase/quadrature (IQ) data.
+An example script for showing how to randomly generate burst definition objects using burst_datagen for use in iq_datagen to create in-phase/quadrature (IQ) data.
 """
 
 import argparse
@@ -13,7 +13,7 @@ import pywaspgen.impairments as impairments
 from pywaspgen.burst_datagen import BurstDatagen
 from pywaspgen.iq_datagen import IQDatagen
 
-# Just for Sync / Gracefull spindown
+# Just for sync / gracefull spindown
 is_alive = True
 
 
@@ -42,8 +42,7 @@ def parse_args():
         help="Config to use",
     )
     parser.add_argument("--iterations", dest="iterations", type=int, default=1000, help="Generate <terations> amount of data.")
-    parser.add_argument("--num-workers", dest="num_workers", type=int, default=10, help="Number of Workers")
-    parser.add_argument("--batch-size", dest="batch_size", type=int, default=1000, help="Batch the IQ generation into groups of <Batch_Size>")
+    parser.add_argument("--batch-size", dest="batch_size", type=int, default=10, help="Batch the IQ generation into groups of <Batch_Size>")
     return parser.parse_args()
 
 
@@ -59,10 +58,6 @@ def _gen_save_off(burst_entry, iq_data):
 
         # Save IQ
         unique_id = str(b.get_meta_uuid())
-        # print(f'UUID: {unique_id}')
-        # Assume the Following Structure
-        # <datapath>/meta
-        # <datapath>/iq
 
         np.save(args.folder_path_out + "/iq/" + unique_id, corrected_iq_data)
         with open(args.folder_path_out + "/meta/" + unique_id + ".pkl", "wb") as f:
@@ -88,13 +83,17 @@ def main(args):
 
     for i in range(loop_count):
         iq_data, updated_burst_list = iq_gen.gen_batch(burst_list_complete[prev_start : prev_start + args.batch_size])
-        print("Saving off this batch of IQ \n")
+        print(f"Saving off this batch of IQ : {i} of {loop_count} \n")
         for k in range(len(updated_burst_list)):
             _gen_save_off(burst_entry=updated_burst_list[k], iq_data=iq_data[k])
         prev_start = prev_start + args.batch_size
 
 
 if __name__ == "__main__":
+    # Create the Following Structure
+    # <datapath>/meta
+    # <datapath>/iq
+
     args = parse_args()
     file_path_meta = args.folder_path_out + "/meta/"
     file_path_iq = args.folder_path_out + "/iq/"
