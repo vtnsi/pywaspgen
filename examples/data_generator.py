@@ -8,7 +8,6 @@ import signal
 from pathlib import Path
 
 import numpy as np
-from tqdm import tqdm
 
 import pywaspgen.impairments as impairments
 from pywaspgen.burst_datagen import BurstDatagen
@@ -44,8 +43,7 @@ def parse_args():
     )
     parser.add_argument("--iterations", dest="iterations", type=int, default=1000, help="Generate <terations> amount of data.")
     parser.add_argument("--num-workers", dest="num_workers", type=int, default=10, help="Number of Workers")
-    parser.add_argument("--gpu", dest="gpu", type=int, default=-1, help="GPU to use")
-
+    parser.add_argument("--batch-size", dest="batch_size", type=int, default=1000, help="Batch the IQ generation into groups of <Batch_Size>")
     return parser.parse_args()
 
 
@@ -84,12 +82,16 @@ def main(args):
         burst_list_complete.append(burst_gen.gen_burstlist())
     print("Burst Listing Completed.\n")
     print("Beginning IQ Generation with multiprocessing. \n Adjust the generation:pool parameter to increase/decrease threading.\n Again this may take time\n")
-    iq_data, updated_burst_list = iq_gen.gen_batch(burst_list_complete)
+    print(f"We are Batching this out in size : {args.batch_size} so well have {args.iterations//args.batch_size} loops to generate the full set of data. \n")
+    loop_count = args.iterations // args.batch_size
+    prev_start = 0
 
-    # Save off
-    print("Saving off IQ and meta data for each burst.\n")
-    for i in tqdm(range(len(updated_burst_list))):
-        _gen_save_off(burst_entry=updated_burst_list[i], iq_data=iq_data[i])
+    for i in range(loop_count):
+        iq_data, updated_burst_list = iq_gen.gen_batch(burst_list_complete[prev_start : prev_start + args.batch_size])
+        print("Saving off this batch of IQ \n")
+        for k in range(len(updated_burst_list)):
+            _gen_save_off(burst_entry=updated_burst_list[k], iq_data=iq_data[k])
+        prev_start = prev_start + args.batch_size
 
 
 if __name__ == "__main__":
