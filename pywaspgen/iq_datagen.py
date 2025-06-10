@@ -85,7 +85,12 @@ class IQDatagen:
         iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf)
 
         for k in range(len(burst_list)):
-            snr = rng.uniform(self.config["sig_defaults"]["iq"]["snr"][0], self.config["sig_defaults"]["iq"]["snr"][1])
+        
+        	if "snr" not in burst_list[k].metadata.keys():
+		    		print("Went into snr if")
+            		snr = rng.uniform(self.config["sig_defaults"]["iq"]["snr"][0], self.config["sig_defaults"]["iq"]["snr"][1])
+            		burst_list[k].metadata["snr"] = snr
+            		
             if burst_list[k].sig_type["type"] == "ask" or burst_list[k].sig_type["type"] == "psk" or burst_list[k].sig_type["type"] == "pam" or burst_list[k].sig_type["type"] == "qam":
                 beta = round(100.0 * rng.uniform(self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][0], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][1])) / 100.0
                 span = rng.integers(self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"][0], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"][1], endpoint=True)
@@ -95,7 +100,6 @@ class IQDatagen:
             else:
                 modulation_index = rng.uniform(self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"][0], self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"][1])
                 burst_list[k].metadata["modulation_index"] = modulation_index
-            burst_list[k].metadata["snr"] = snr
 
         new_burst_list = []
         for burst in burst_list:
