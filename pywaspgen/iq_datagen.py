@@ -87,11 +87,8 @@ class IQDatagen:
         for k in range(len(burst_list)):
         
             if "snr" not in burst_list[k].metadata.keys():
-                print("Went into snr if")
                 snr = rng.uniform(self.config["sig_defaults"]["iq"]["snr"][0], self.config["sig_defaults"]["iq"]["snr"][1])
                 burst_list[k].metadata["snr"] = snr	
-            else:
-                print("Setting snr from burst snr")
             		
             if burst_list[k].sig_type["type"] == "ask" or burst_list[k].sig_type["type"] == "psk" or burst_list[k].sig_type["type"] == "pam" or burst_list[k].sig_type["type"] == "qam":
                 beta = round(100.0 * rng.uniform(self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][0], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"][1])) / 100.0
