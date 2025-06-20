@@ -22,7 +22,7 @@ rand_burst_list = burst_gen.gen_burstlist()
 # Print and plot the list of random signal bursts (note that each burst is given a universally unique identifier).
 print("\nUser-Defined Burst List:")
 print(rand_burst_list)
-burst_gen.plot_burstdata(rand_burst_list)
+burst_gen.plot_burstdata(rand_burst_list[0])
 plt.show()
 
 # In PyWASPGEN, synthetic radio frequency captures are provided in complex-baseband format where the real-component of the captures represent the in-phase components
@@ -32,9 +32,9 @@ plt.show()
 iq_data, updated_burst_list = iq_gen.gen_iqdata(rand_burst_list)
 
 # Print the returned burst list and plot the spectrogram of the created radio frequency capture with and without the burst metadata overlaid (note that the updated burst list now includes the metadata from the iq generator).
-print(updated_burst_list)
-ax = burst_gen.plot_burstdata(updated_burst_list)
-iq_gen.plot_iqdata(iq_data, ax)
+print(updated_burst_list[0])
+ax = burst_gen.plot_burstdata(updated_burst_list[0])
+iq_gen.plot_iqdata(iq_data[0], ax)
 plt.show()
-iq_gen.plot_iqdata(iq_data)
+iq_gen.plot_iqdata(iq_data[0])
 plt.show()

@@ -1,3 +1,5 @@
+import numpy as np
+
 class MODEM:
     """
     Base modem class.
@@ -12,17 +14,18 @@ class MODEM:
         """
         self.sig_type = sig_type
 
-    def gen_samples(self, num_samples):
+    def gen_samples(self, num_samples, rng=np.random.default_rng()):
         """
         Generates a random modulated IQ data sample stream.
 
         Args:
             num_samples (int): The length, in samples, of the random modulated IQ data sample stream to generate.
+            rng (obj): A numpy random generator object used by the random generators.
 
         Returns:
             float complex: A numpy array, of size defined by ``num_samples``, of modulated IQ data samples.
         """
-        return self._gen_samples(num_samples)
+        return self._gen_samples(num_samples, rng)
 
     def get_sim_awgn(self, samples):
         """

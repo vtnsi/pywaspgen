@@ -24,12 +24,12 @@ for snr_db in tqdm.trange(snr_db_range[0], snr_db_range[1] + 1):
 
     iq_data, updated_rand_burst = iq_gen.gen_iqdata(rand_burst)     # Based on the random signal burst, generates received samples impacted by an AWGN channel.
 
-    corrected_iq_data = iq_data[updated_rand_burst[0].start:updated_rand_burst[0].start+updated_rand_burst[0].duration]             # Corrects the sample offset of the received samples.
-    corrected_iq_data = impairments.freq_off(corrected_iq_data, -updated_rand_burst[0].cent_freq)                                   # Corrects the frequency offset of the received samples.
+    corrected_iq_data = iq_data[0][updated_rand_burst[0][0].start:updated_rand_burst[0][0].start+updated_rand_burst[0][0].duration]             # Corrects the sample offset of the received samples.
+    corrected_iq_data = impairments.freq_off(corrected_iq_data, -updated_rand_burst[0][0].cent_freq)                                   # Corrects the frequency offset of the received samples.
 
     # Calculates the number of symbols different between the transmit symbols and the received symbols and then calculates the symbol error rate (SER).
-    ser_sim.append(updated_rand_burst[0].metadata["modem"].get_sim_awgn(corrected_iq_data))
-    ser_theory.append(updated_rand_burst[0].metadata["modem"].get_theory_awgn(snr_db))      # Generates the theoretical SER (theoretical equation assumed to be provided by the modem itself).
+    ser_sim.append(updated_rand_burst[0][0].metadata["modem"].get_sim_awgn(corrected_iq_data))
+    ser_theory.append(updated_rand_burst[0][0].metadata["modem"].get_theory_awgn(snr_db))      # Generates the theoretical SER (theoretical equation assumed to be provided by the modem itself).
 
 # Plotting SER Simulation and Theory Curves
 plt.figure(figsize=(15, 5))

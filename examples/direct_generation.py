@@ -43,12 +43,12 @@ plt.show()
 # and the imaginary-components represent the quadrature components (https://en.wikipedia.org/wiki/Baseband#Equivalent_baseband_signal).
 
 # Here, we create the radio frequency capture from the user-defined signal burst list created above.
-iq_data, updated_burst_list = iq_gen.gen_iqdata(user_burst_list)
+iq_data, updated_burst_list = iq_gen.gen_iqdata([user_burst_list])
 
 # Print the returned burst list and plot the spectrogram of the created radio frequency capture with and without the burst metadata overlaid.
 print(updated_burst_list)
-ax = burst_gen.plot_burstdata(updated_burst_list)
-iq_gen.plot_iqdata(iq_data, ax)
+ax = burst_gen.plot_burstdata(updated_burst_list[0])
+iq_gen.plot_iqdata(iq_data[0], ax)
 plt.show()
-iq_gen.plot_iqdata(iq_data)
+iq_gen.plot_iqdata(iq_data[0])
 plt.show()

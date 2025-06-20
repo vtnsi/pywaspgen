@@ -29,12 +29,13 @@ class IQDatagen:
             self.config = instance
         self.rng = np.random.default_rng(self.config["generation"]["rand_seed"])
 
-    def _get_iq(self, burst):
+    def _get_iq(self, burst, rng):
         """
         Generates IQ data for a burst definition, of type :class:`pywaspgen.burst_def.BurstDef`.
 
         Args:
             burst (obj): The :class:`pywaspgen.burst_def.BurstDef` object to create IQ data for.
+            rng (obj): A numpy random generator object used by the random generators.
 
         Returns:
             float complex, obj: The IQ data of the provided burst definition, the :class:`pywaspgen.modems` object used to create the IQ data.
@@ -50,13 +51,13 @@ class IQDatagen:
         else:
             sig_modem = getattr(modem, burst.sig_type["type"])(burst.sig_type, burst.metadata['pulse_type'])
 
-        samples = sig_modem.gen_samples(burst.duration)
+        samples = sig_modem.gen_samples(burst.duration, rng)
         if samples.size != 0:
             samples = impairments.freq_off(samples, burst.cent_freq)
             samples = np.sqrt((10.0 ** (burst.metadata["snr"] / 10.0)) / 2.0) * samples
         return samples, sig_modem
 
-    def gen_batch(self, burst_lists):
+    def gen_iqdata(self, burst_lists):
         """
         Generates a batch of IQ data using multiprocessing across cpu cores.
 
@@ -66,23 +67,24 @@ class IQDatagen:
         Returns:
             float complex: A list of numpy IQ data arrays for the provided ``burst_lists``.
         """
-        with multiprocessing.Pool(self.config["generation"]["pool"]) as p:
-            return list(zip(*list(p.starmap(self.gen_iqdata, tqdm.tqdm(zip(burst_lists, range(len(burst_lists))), total=len(burst_lists))))))
 
-    def gen_iqdata(self, burst_list, data_idx=-1):
+        with multiprocessing.Pool(self.config["generation"]["pool"]) as pool:
+            rngs = self.rng.spawn(len(burst_lists))
+            return list(zip(*list(pool.starmap(self._gen_iqdata, tqdm.tqdm(zip(burst_lists, rngs), total=len(burst_lists))))))
+
+    def _gen_iqdata(self, burst_list, rng):
         """
         Generates a random aggregate IQ data from the provided burst_list with modem parameters randomized based on ranges specified by the configuration file.
 
         Args:
             burst_list (obj): The list of burst_def objects, of type :class:`pywaspgen.burst_def.BurstDef`, to create the IQ data.
-            data_idx (int): Index for multiprocessing randomization bookkeeping by the gen_batch function. Not used otherwise.
+            rng (obj): A numpy random generator object used by the random generators.
 
         Returns:
             float complex, obj: A numpy array of aggregate IQ data generated from the ``burst_list``, An updated ``burst_list`` with values adjusted based on the parameters used to create the aggregate IQ data.
         """
-        rng = self.rng if data_idx == -1 else np.random.default_rng([data_idx, self.config["generation"]["rand_seed"]])
 
-        iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf)
+        iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf, rng=rng)
 
         for k in range(len(burst_list)):
             snr = rng.uniform(self.config["sig_defaults"]["iq"]["snr"][0], self.config["sig_defaults"]["iq"]["snr"][1])
@@ -99,7 +101,7 @@ class IQDatagen:
 
         new_burst_list = []
         for burst in burst_list:
-            samples, sig_modem = self._get_iq(burst)
+            samples, sig_modem = self._get_iq(burst, rng)
             burst.duration = len(samples)
             start_iq_idx = max(0, burst.start)
             start_samples_idx = max(0, -burst.start)
