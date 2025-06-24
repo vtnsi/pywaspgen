@@ -29,8 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
       - name: Install dependencies
         run: |
           pip install sphinx sphinx_rtd_theme myst_parser
