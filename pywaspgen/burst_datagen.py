@@ -1,6 +1,16 @@
 """
 This module provides functionality for generating burst data via the :class:`BurstDatagen` object.
 """
+import os
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
+import matplotlib
+matplotlib.use('QtAgg') 
+
 import distinctipy
 import json
 import multiprocessing
@@ -118,6 +128,8 @@ class BurstDatagen:
         Returns:
             obj: A list of :class:`pywaspgen.burst_def.BurstDef` objects each with random parameters in ranges specified by the configuration file.
         """
+        total_signals = rng.integers(self.config["spectrum"]["max_signals"][0], self.config["spectrum"]["max_signals"][1], endpoint=True) 
+
         burst_list = []
         sig_count = 0
         stop_gen = False
@@ -132,7 +144,7 @@ class BurstDatagen:
                 trial_count += 1
             if trial_count == self.config["generation"]["max_attempts"]:
                 stop_gen = True
-            if sig_count == self.config["spectrum"]["max_signals"]:
+            if sig_count == total_signals:
                 stop_gen = True
         return burst_list
 

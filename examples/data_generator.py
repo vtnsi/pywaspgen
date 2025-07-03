@@ -1,15 +1,6 @@
 """
 An example script for showing how to randomly generate burst definition objects using burst_datagen for use in iq_datagen to create in-phase/quadrature (IQ) data.
 """
-import os
-
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
-os.environ["NUMEXPR_NUM_THREADS"] = "1"
-
-
 import argparse
 import pickle
 import signal
@@ -24,14 +15,11 @@ from pywaspgen.iq_datagen import IQDatagen
 # Just for sync / gracefull spindown
 is_alive = True
 
-
 def signal_handler(sig, frame):
     global is_alive
     is_alive = False
 
-
 signal.signal(signal.SIGINT, signal_handler)
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -53,7 +41,6 @@ def parse_args():
     parser.add_argument("--batch-size", dest="batch_size", type=int, default=10, help="Batch the IQ generation into groups of <Batch_Size>")
     return parser.parse_args()
 
-
 def _gen_save_off(burst_entry, iq_data):
     """
     Illustrates saving the meta data and the RAW IQ for each generate signal.
@@ -70,7 +57,6 @@ def _gen_save_off(burst_entry, iq_data):
         np.save(args.folder_path_out + "/iq/" + unique_id, corrected_iq_data)
         with open(args.folder_path_out + "/meta/" + unique_id + ".pkl", "wb") as f:
             pickle.dump(b, f)
-
 
 def main(args):
     # Instantiate a burst generator object and specify the signal parameter configuration file to use.
@@ -94,7 +80,6 @@ def main(args):
         for k in range(len(updated_burst_list)):
             _gen_save_off(burst_entry=updated_burst_list[k], iq_data=iq_data[k])
         prev_start = prev_start + args.batch_size
-
 
 if __name__ == "__main__":
     # Create the Following Structure

@@ -9,7 +9,7 @@
   {
     "observation_duration": 200000,
     "sig_types": [{ "type": "fsk", "order": 2, "label": "BFSK" }],
-    "max_signals": 1,
+    "max_signals": [1, 1],
     "allow_collisions_flag": false,
     "save_modems": true
   },
