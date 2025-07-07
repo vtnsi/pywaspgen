@@ -1,7 +1,7 @@
 {
   "generation": 
   {
-    "rand_seed": 1337,
+    "rand_seed": 1234,
     "pool": 8,
     "max_attempts": 100
   },
@@ -20,7 +20,7 @@
         {"label": "16QAM", "type": "qam", "order": 16},
         {"label": "ALT-QPSK", "type": "psk", "order": 4}
       ],
-    "max_signals": 10,
+    "max_signals": [5, 10],
     "allow_collisions_flag": false
   },
   "sig_defaults":

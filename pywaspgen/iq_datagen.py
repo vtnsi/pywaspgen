@@ -2,9 +2,18 @@
 This module provides functionality for generating in-phase/quadrature(IQ) data from bursts via the :class:`IQDatagen` object.
 """
 
+import os
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
+import matplotlib
+matplotlib.use('QtAgg') 
+
 import json
 import multiprocessing
-
 import matplotlib.pyplot as plt
 import numpy as np
 import tqdm
