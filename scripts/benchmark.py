@@ -7,8 +7,8 @@ from pywaspgen.burst_datagen import BurstDatagen
 from pywaspgen.iq_datagen import IQDatagen
 
 if __name__ == "__main__":
-    num_batches = 1
-    batch_size = 200
+    num_batches = 10
+    batch_size = 100
 
     burst_gen = BurstDatagen("configs/default.json")
     iq_gen = IQDatagen("configs/default.json")
