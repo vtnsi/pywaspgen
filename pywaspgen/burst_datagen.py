@@ -1,12 +1,6 @@
 """
 This module provides functionality for generating burst data via the :class:`BurstDatagen` object.
 """
-import os
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
-os.environ["NUMEXPR_NUM_THREADS"] = "1"
 
 import matplotlib
 matplotlib.use('QtAgg') 
@@ -17,7 +11,6 @@ import multiprocessing
 import numpy as np
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-import tqdm
 import uuid
 from pywaspgen import burst_def
 
@@ -98,7 +91,7 @@ class BurstDatagen:
         elif type(range[0]).__name__ == "int":
             return rng.integers(range[0], range[1], endpoint=True)
 
-    def gen_burst(self, rng):
+    def _gen_burst(self, rng):
         """
         Generates a random :class:`pywaspgen.burst_def.BurstDef` object.
 
@@ -135,7 +128,7 @@ class BurstDatagen:
         stop_gen = False
         trial_count = 0
         while not stop_gen:
-            candidate_burst = self.gen_burst(rng)
+            candidate_burst = self._gen_burst(rng)
             if not self.__check_not_observed(candidate_burst) and (self.config["spectrum"]["allow_collisions_flag"] or (not self.config["spectrum"]["allow_collisions_flag"] and not self.__check_collisions(candidate_burst, burst_list))):
                 burst_list.append(candidate_burst)
                 sig_count += 1
@@ -160,7 +153,7 @@ class BurstDatagen:
         """
         with multiprocessing.Pool(self.config["generation"]["pool"]) as pool:
             rngs = self.rng.spawn(batch_size)
-            return list(pool.map(self._gen_burstlist, tqdm.tqdm(rngs, total=batch_size)))
+            return list(pool.map(self._gen_burstlist, rngs))
 
     def plot_burstdata(self, burst_list, ax=[]):
         """

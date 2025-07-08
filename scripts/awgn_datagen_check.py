@@ -1,12 +1,11 @@
 """
 A test script for checking if a given digital modem has been implemented correctly by checking its simulated performance against its theoretical performance in an Additive White Guassian Noise (AWGN) channel.
 """
-import matplotlib.pyplot as plt
-import tqdm
 
 import pywaspgen.impairments as impairments
 from pywaspgen.burst_datagen import BurstDatagen
 from pywaspgen.iq_datagen import IQDatagen
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     # Instantiate a burst generator object and specify the signal parameter configuration file to use.
@@ -18,7 +17,7 @@ if __name__ == "__main__":
 
     ser_sim = []
     ser_theory = []
-    for snr_db in tqdm.trange(snr_db_range[0], snr_db_range[1] + 1):
+    for snr_db in range(snr_db_range[0], snr_db_range[1] + 1):
         iq_gen.config["sig_defaults"]["iq"]["snr"] = (snr_db, snr_db)   # Overwrites the configuration file to generate a specific SNR.
 
         rand_burst = burst_gen.gen_burstlist()                          # Use the instantiated burst generator object to create a random signal burst based on the chosen configuration file.

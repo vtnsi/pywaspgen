@@ -1,14 +1,14 @@
 """
 A script for testing and timing the batch processing capabilities of the generators.
 """
-import time
 
 from pywaspgen.burst_datagen import BurstDatagen
 from pywaspgen.iq_datagen import IQDatagen
+import time
 
 if __name__ == "__main__":
     num_batches = 10
-    batch_size = 100
+    batch_size = 8
 
     burst_gen = BurstDatagen("configs/default.json")
     iq_gen = IQDatagen("configs/default.json")

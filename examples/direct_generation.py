@@ -1,8 +1,9 @@
 """
 An example script for showing how to directly generate burst definition objects for use in iq_datagen to create in-phase/quadrature (IQ) data.
 """
-import matplotlib.pyplot as plt
+
 import pywaspgen
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     # Instantiate a burst generator object (note: here only to be used for plotting the burst list).

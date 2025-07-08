@@ -42,7 +42,7 @@
         {
           "format": "RRC",
           "beta": [0.1, 0.9],
-          "span": [10, 20],
+          "span": [10, 10],
           "window": 
           {
             "type": "kaiser",
