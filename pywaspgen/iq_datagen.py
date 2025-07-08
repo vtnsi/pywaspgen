@@ -11,8 +11,8 @@ from pywaspgen import modem
 from pywaspgen import impairments
 
 def _gen_iqdata_static(args):
-    self_ref, burst_list, rng = args
-    return self_ref._gen_iqdata(burst_list, rng)
+    self_ref, burst_lists, rng = args
+    return self_ref._gen_iqdata(burst_lists, rng)
 
 class IQDatagen:
     def __init__(self, config_file="configs/default.json"):
@@ -63,17 +63,30 @@ class IQDatagen:
         Returns:
             float complex: A list of numpy IQ data arrays for the provided ``burst_lists``.
         """        
+        k, m = divmod(len(burst_lists), self.config["generation"]["pool"])
+        process_burst_lists = []
+        start = 0
+        for idx in range(self.config["generation"]["pool"]):
+            end = start + k + (1 if idx < m else 0)
+            process_burst_lists.append(burst_lists[start:end])
+            start = end
+
         rngs = self.rng.spawn(len(burst_lists))
         with multiprocessing.Pool(self.config["generation"]["pool"]) as pool:
-            with tqdm(total=len(burst_lists)) as pbar:
+            with tqdm(total=sum(1 for sublist in process_burst_lists if len(sublist) > 0)) as pbar:
                 results = []
-                for burst_list, rng in zip(burst_lists, rngs):
-                    result = pool.apply_async(_gen_iqdata_static, args=((self, burst_list, rng),), callback=lambda _: pbar.update(1))
+                for burst_lists, rng in zip(process_burst_lists, rngs):
+                    result = pool.apply_async(_gen_iqdata_static, args=((self, burst_lists, rng),), callback=lambda _: pbar.update(1))
                     results.append(result)
                 output = [r.get() for r in results]
-        return list(zip(*output))
 
-    def _gen_iqdata(self, burst_list, rng):
+        iq_data_list, updated_burst_lists = zip(*output)
+        iq_data = [item for sublist in iq_data_list for item in sublist]
+        updated_burst_list = [item for sublist in updated_burst_lists for item in sublist]
+
+        return iq_data, updated_burst_list
+    
+    def _gen_iqdata(self, burst_lists, rng):
         """
         Generates a random aggregate IQ data from the provided burst_list with modem parameters randomized based on ranges specified by the configuration file.
 
@@ -83,37 +96,43 @@ class IQDatagen:
 
         Returns:
             float complex, obj: A numpy array of aggregate IQ data generated from the ``burst_list``, An updated ``burst_list`` with values adjusted based on the parameters used to create the aggregate IQ data.
-        """        
-        iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf, rng=rng)
+        """
 
-        for k in range(len(burst_list)):
-            snr = rng.uniform(*self.config["sig_defaults"]["iq"]["snr"])
-            if burst_list[k].sig_type["type"] in ["ask", "psk", "pam", "qam"]:
-                beta = round(100.0 * rng.uniform(*self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"])) / 100.0
-                span = rng.integers(*self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"], endpoint=True)
-                sps = round(10.0 * ((beta + 1.0) / burst_list[k].bandwidth)) / 10.0
-                burst_list[k].bandwidth = (beta + 1.0) / sps
-                burst_list[k].metadata["pulse_type"] = {"sps": sps, "format": self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["format"], "params": {"beta": beta, "span": span, "window": (self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["window"]["type"], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["window"]["params"])}}
-            else:
-                modulation_index = rng.uniform(*self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"])
-                burst_list[k].metadata["modulation_index"] = modulation_index
-            burst_list[k].metadata["snr"] = snr
+        iq_data_list = []
+        updated_burst_lists = []
+        for burst_list in burst_lists:
+            iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf, rng=rng)
 
-        new_burst_list = []
-        for burst in burst_list:
-            samples, sig_modem = self._get_iq(burst, rng)
-            burst.duration = len(samples)
-            start_iq_idx = max(0, burst.start)
-            start_samples_idx = max(0, -burst.start)
-            num_samples = min(burst.duration - start_samples_idx, self.config["spectrum"]["observation_duration"] - start_iq_idx)
-            iq_data[start_iq_idx:start_iq_idx + num_samples] += samples[start_samples_idx:start_samples_idx + num_samples]
-            burst.start = start_iq_idx
-            burst.duration = num_samples
-            if self.config["sig_defaults"]["save_modems"]:
-                burst.metadata["modem"] = sig_modem
-            new_burst_list.append(burst)
+            for k in range(len(burst_list)):
+                snr = rng.uniform(*self.config["sig_defaults"]["iq"]["snr"])
+                if burst_list[k].sig_type["type"] in ["ask", "psk", "pam", "qam"]:
+                    beta = round(100.0 * rng.uniform(*self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"])) / 100.0
+                    span = rng.integers(*self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"], endpoint=True)
+                    sps = round(10.0 * ((beta + 1.0) / burst_list[k].bandwidth)) / 10.0
+                    burst_list[k].bandwidth = (beta + 1.0) / sps
+                    burst_list[k].metadata["pulse_type"] = {"sps": sps, "format": self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["format"], "params": {"beta": beta, "span": span, "window": (self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["window"]["type"], self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["window"]["params"])}}
+                else:
+                    modulation_index = rng.uniform(*self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"])
+                    burst_list[k].metadata["modulation_index"] = modulation_index
+                burst_list[k].metadata["snr"] = snr
 
-        return iq_data, new_burst_list
+            new_burst_list = []
+            for burst in burst_list:
+                samples, sig_modem = self._get_iq(burst, rng)
+                burst.duration = len(samples)
+                start_iq_idx = max(0, burst.start)
+                start_samples_idx = max(0, -burst.start)
+                num_samples = min(burst.duration - start_samples_idx, self.config["spectrum"]["observation_duration"] - start_iq_idx)
+                iq_data[start_iq_idx:start_iq_idx + num_samples] += samples[start_samples_idx:start_samples_idx + num_samples]
+                burst.start = start_iq_idx
+                burst.duration = num_samples
+                if self.config["sig_defaults"]["save_modems"]:
+                    burst.metadata["modem"] = sig_modem
+                new_burst_list.append(burst)
+
+            iq_data_list.append(iq_data)
+            updated_burst_lists.append(new_burst_list)
+        return iq_data_list, updated_burst_lists
     
     def plot_iqdata(self, iq_data, ax=[]):
         """
