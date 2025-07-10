@@ -22,7 +22,7 @@ pre-commit install
 ```
 
 ## Usage
-Generating synthetic radio frequency captures using PyWASPGEN can either be done directly through user-specified signal generation parameters or pseudorandomly through user-specified signal generation parameter ranges.
+Generating synthetic radio frequency captures using PyWASPGEN can either be done directly through user-specified signal generation parameters or pseudorandomly through user-specified signal generation parameter ranges. Note: PyWASPGEN should be your first import to avoid issues with process spawning.
 
 ### Direct Capture Generation (see example script below for detailed comments)
 ```bash
