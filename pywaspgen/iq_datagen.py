@@ -1,6 +1,7 @@
 import matplotlib
 matplotlib.use('QtAgg') 
 
+import gc
 import json
 import multiprocessing
 import matplotlib.pyplot as plt
@@ -83,7 +84,10 @@ class IQDatagen:
         iq_data_list, updated_burst_lists = zip(*output)
         iq_data = [item for sublist in iq_data_list for item in sublist]
         updated_burst_list = [item for sublist in updated_burst_lists for item in sublist]
-
+        
+        del rngs, results, result, output, iq_data_list, updated_burst_lists
+        gc.collect()
+        
         return iq_data, updated_burst_list
     
     def _gen_iqdata(self, burst_lists, rng):
@@ -132,6 +136,10 @@ class IQDatagen:
 
             iq_data_list.append(iq_data)
             updated_burst_lists.append(new_burst_list)
+
+        del iq_data, new_burst_list, sig_modem
+        gc.collect()
+        
         return iq_data_list, updated_burst_lists
     
     def plot_iqdata(self, iq_data, ax=[]):
