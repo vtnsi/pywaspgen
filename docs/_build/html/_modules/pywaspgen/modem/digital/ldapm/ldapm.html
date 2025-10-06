@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pywaspgen.modem.digital.ldapm.ldapm &mdash; PyWASPGEN v0.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=0335fd14"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            PyWASPGEN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using Pywaspgen:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../building_configuration_files.html">How to Build a Pywaspgen Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utilizing_pywaspgen.html">How to Use Pywaspgen</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pywaspgen API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules/modules.html">pywaspgen</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">PyWASPGEN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pywaspgen.modem.digital.ldapm.ldapm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pywaspgen.modem.digital.ldapm.ldapm</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pywaspgen.filters</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">filters</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pywaspgen.modem.digital.digital</span><span class="w"> </span><span class="kn">import</span> <span class="n">DIGITAL</span>
+
+<div class="viewcode-block" id="LDAPM">
+<a class="viewcode-back" href="../../../../../modules/pywaspgen.modem.digital.ldapm.html#pywaspgen.modem.digital.ldapm.ldapm.LDAPM">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LDAPM</span><span class="p">(</span><span class="n">DIGITAL</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Linear Digital Amplitude Phase Modulation (LDAPM) modem base class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sig_type</span><span class="p">,</span> <span class="n">pulse_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The constructor for the base `LDAPM` class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sig_type (dict): The signal type of the LDAPM modem.</span>
+<span class="sd">            pulse_type (dict): The pulse shape metadata of the LDAPM modem.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">sig_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_type</span> <span class="o">=</span> <span class="n">pulse_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_pulse_shape</span><span class="p">()</span>     
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">_gen_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a random modulated LDAPM data sample stream of pulse shaped LDAPM data symbols from the LDAPM modem&#39;s data symbol table.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_samples (int): The length, in samples, of the random modulated LDAPM data sample stream to generate.</span>
+<span class="sd">            rng (obj): A numpy random generator object used by the random generators.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float complex: A numpy array, of size defined by ``num_samples``, of pulse shaped LDAPM data symbols chosen uniformly from the LDAPM modem&#39;s data symbol table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total_symbols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shaper</span><span class="o">.</span><span class="n">calc_num_symbols</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total_symbols</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shaper</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gen_symbols</span><span class="p">(</span><span class="n">total_symbols</span><span class="p">,</span> <span class="n">rng</span><span class="p">),</span> <span class="s2">&quot;interpolate&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">num_samples</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>     
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_symbols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Demodulates a modulated LDAPM data sample stream.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            samples (float complex): The modulated LDAPM data symbols to be demodulated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float complex: A numpy array of demodulated LDAPM data symbols calculated from ``samples``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">noisy_symbols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_shaper</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="s2">&quot;decimate&quot;</span><span class="p">))</span>
+        <span class="n">demoded_symbols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">noisy_symbols</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">noisy_symbols</span><span class="p">)):</span>
+            <span class="n">demoded_symbols</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">noisy_symbols</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol_table</span><span class="p">))</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">demoded_symbols</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">__set_pulse_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the pulse shaping filter of the modem based on ``DIGITAL.pulse_type``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">class_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pulse_type</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pulse_shaper</span> <span class="o">=</span> <span class="n">class_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pulse_type</span><span class="p">)</span>    </div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Virginia Tech National Security Institute.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pywaspgen.iq_datagen &mdash; PyWASPGEN v0.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=0335fd14"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyWASPGEN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using Pywaspgen:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../building_configuration_files.html">How to Build a Pywaspgen Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilizing_pywaspgen.html">How to Use Pywaspgen</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pywaspgen API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/modules.html">pywaspgen</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyWASPGEN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pywaspgen.iq_datagen</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pywaspgen.iq_datagen</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;QtAgg&#39;</span><span class="p">)</span> 
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pywaspgen</span><span class="w"> </span><span class="kn">import</span> <span class="n">modem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pywaspgen</span><span class="w"> </span><span class="kn">import</span> <span class="n">impairments</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gen_iqdata_static</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">self_ref</span><span class="p">,</span> <span class="n">burst_lists</span><span class="p">,</span> <span class="n">rng</span> <span class="o">=</span> <span class="n">args</span>
+    <span class="k">return</span> <span class="n">self_ref</span><span class="o">.</span><span class="n">_gen_iqdata</span><span class="p">(</span><span class="n">burst_lists</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IQDatagen">
+<a class="viewcode-back" href="../../modules/pywaspgen.html#pywaspgen.iq_datagen.IQDatagen">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IQDatagen</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="o">=</span><span class="s2">&quot;configs/default.json&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The constructor for the `IQDatagen` class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_file (str): The relative file path for the configuration file to be used for generating the IQ data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_file_id</span><span class="p">:</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_file_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;generation&quot;</span><span class="p">][</span><span class="s2">&quot;rand_seed&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_iq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">burst</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates IQ data for a burst definition, of type :class:`pywaspgen.burst_def.BurstDef`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            burst (obj): The :class:`pywaspgen.burst_def.BurstDef` object to create IQ data for.</span>
+<span class="sd">            rng (obj): A numpy random generator object used by the random generators.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float complex, obj: The IQ data of the provided burst definition, the :class:`pywaspgen.modems` object used to create the IQ data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="k">if</span> <span class="n">burst</span><span class="o">.</span><span class="n">sig_type</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;fsk&quot;</span><span class="p">:</span>
+            <span class="n">Rs</span> <span class="o">=</span> <span class="n">burst</span><span class="o">.</span><span class="n">bandwidth</span> <span class="o">/</span> <span class="p">(</span><span class="n">burst</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;modulation_index&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="n">burst</span><span class="o">.</span><span class="n">sig_type</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">)</span>
+            <span class="n">deviation</span> <span class="o">=</span> <span class="p">(</span><span class="n">burst</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;modulation_index&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="p">(</span><span class="n">burst</span><span class="o">.</span><span class="n">sig_type</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">sps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">Rs</span><span class="p">)</span>
+            <span class="n">deviation</span> <span class="o">=</span> <span class="p">(</span><span class="n">burst</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;modulation_index&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">sps</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">burst</span><span class="o">.</span><span class="n">sig_type</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">sig_modem</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">modem</span><span class="p">,</span> <span class="n">burst</span><span class="o">.</span><span class="n">sig_type</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])(</span><span class="n">deviation</span><span class="p">,</span> <span class="n">sps</span><span class="p">,</span> <span class="n">burst</span><span class="o">.</span><span class="n">sig_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sig_modem</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">modem</span><span class="p">,</span> <span class="n">burst</span><span class="o">.</span><span class="n">sig_type</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])(</span><span class="n">burst</span><span class="o">.</span><span class="n">sig_type</span><span class="p">,</span> <span class="n">burst</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;pulse_type&quot;</span><span class="p">])</span>
+
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">sig_modem</span><span class="o">.</span><span class="n">gen_samples</span><span class="p">(</span><span class="n">burst</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">samples</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">impairments</span><span class="o">.</span><span class="n">freq_off</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">burst</span><span class="o">.</span><span class="n">cent_freq</span><span class="p">)</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mf">10.0</span> <span class="o">**</span> <span class="p">(</span><span class="n">burst</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;snr&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">10.0</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">samples</span>
+        <span class="k">return</span> <span class="n">samples</span><span class="p">,</span> <span class="n">sig_modem</span>
+
+<div class="viewcode-block" id="IQDatagen.gen_iqdata">
+<a class="viewcode-back" href="../../modules/pywaspgen.html#pywaspgen.iq_datagen.IQDatagen.gen_iqdata">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_iqdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">burst_lists</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a batch of IQ data using multiprocessing across cpu cores.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            burst_lists (obj): A list of burst lists of :class:`pywaspgen.burst_def.BurstDef` objects.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float complex: A list of numpy IQ data arrays for the provided ``burst_lists``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">burst_lists</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;generation&quot;</span><span class="p">][</span><span class="s2">&quot;pool&quot;</span><span class="p">])</span>
+        <span class="n">process_burst_lists</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;generation&quot;</span><span class="p">][</span><span class="s2">&quot;pool&quot;</span><span class="p">]):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="n">m</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">process_burst_lists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">burst_lists</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">])</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">end</span>
+
+        <span class="n">rngs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">burst_lists</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;generation&quot;</span><span class="p">][</span><span class="s2">&quot;pool&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">process_burst_lists</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sublist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">:</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">burst_lists</span><span class="p">,</span> <span class="n">rng</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">process_burst_lists</span><span class="p">,</span> <span class="n">rngs</span><span class="p">):</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">_gen_iqdata_static</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="n">burst_lists</span><span class="p">,</span> <span class="n">rng</span><span class="p">),),</span> <span class="n">callback</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+
+        <span class="n">iq_data_list</span><span class="p">,</span> <span class="n">updated_burst_lists</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">output</span><span class="p">)</span>
+        <span class="n">iq_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">iq_data_list</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+        <span class="n">updated_burst_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">updated_burst_lists</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">iq_data</span><span class="p">,</span> <span class="n">updated_burst_list</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_gen_iqdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">burst_lists</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a random aggregate IQ data from the provided burst_list with modem parameters randomized based on ranges specified by the configuration file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            burst_list (obj): The list of burst_def objects, of type :class:`pywaspgen.burst_def.BurstDef`, to create the IQ data.</span>
+<span class="sd">            rng (obj): A numpy random generator object used by the random generators.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float complex, obj: A numpy array of aggregate IQ data generated from the ``burst_list``, An updated ``burst_list`` with values adjusted based on the parameters used to create the aggregate IQ data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">iq_data_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">updated_burst_lists</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">burst_list</span> <span class="ow">in</span> <span class="n">burst_lists</span><span class="p">:</span>
+            <span class="n">iq_data</span> <span class="o">=</span> <span class="n">impairments</span><span class="o">.</span><span class="n">awgn</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;spectrum&quot;</span><span class="p">][</span><span class="s2">&quot;observation_duration&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">csingle</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">burst_list</span><span class="p">)):</span>
+                <span class="n">snr</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;sig_defaults&quot;</span><span class="p">][</span><span class="s2">&quot;iq&quot;</span><span class="p">][</span><span class="s2">&quot;snr&quot;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">burst_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">sig_type</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ask&quot;</span><span class="p">,</span> <span class="s2">&quot;psk&quot;</span><span class="p">,</span> <span class="s2">&quot;pam&quot;</span><span class="p">,</span> <span class="s2">&quot;qam&quot;</span><span class="p">]:</span>
+                    <span class="n">beta</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mf">100.0</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;sig_defaults&quot;</span><span class="p">][</span><span class="s2">&quot;iq&quot;</span><span class="p">][</span><span class="s2">&quot;ldapm&quot;</span><span class="p">][</span><span class="s2">&quot;pulse_shape&quot;</span><span class="p">][</span><span class="s2">&quot;beta&quot;</span><span class="p">]))</span> <span class="o">/</span> <span class="mf">100.0</span>
+                    <span class="n">span</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;sig_defaults&quot;</span><span class="p">][</span><span class="s2">&quot;iq&quot;</span><span class="p">][</span><span class="s2">&quot;ldapm&quot;</span><span class="p">][</span><span class="s2">&quot;pulse_shape&quot;</span><span class="p">][</span><span class="s2">&quot;span&quot;</span><span class="p">],</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">sps</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mf">10.0</span> <span class="o">*</span> <span class="p">((</span><span class="n">beta</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">burst_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">bandwidth</span><span class="p">))</span> <span class="o">/</span> <span class="mf">10.0</span>
+                    <span class="n">burst_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">bandwidth</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">sps</span>
+                    <span class="n">burst_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;pulse_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sps&quot;</span><span class="p">:</span> <span class="n">sps</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;sig_defaults&quot;</span><span class="p">][</span><span class="s2">&quot;iq&quot;</span><span class="p">][</span><span class="s2">&quot;ldapm&quot;</span><span class="p">][</span><span class="s2">&quot;pulse_shape&quot;</span><span class="p">][</span><span class="s2">&quot;format&quot;</span><span class="p">],</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span> <span class="s2">&quot;span&quot;</span><span class="p">:</span> <span class="n">span</span><span class="p">,</span> <span class="s2">&quot;window&quot;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;sig_defaults&quot;</span><span class="p">][</span><span class="s2">&quot;iq&quot;</span><span class="p">][</span><span class="s2">&quot;ldapm&quot;</span><span class="p">][</span><span class="s2">&quot;pulse_shape&quot;</span><span class="p">][</span><span class="s2">&quot;window&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;sig_defaults&quot;</span><span class="p">][</span><span class="s2">&quot;iq&quot;</span><span class="p">][</span><span class="s2">&quot;ldapm&quot;</span><span class="p">][</span><span class="s2">&quot;pulse_shape&quot;</span><span class="p">][</span><span class="s2">&quot;window&quot;</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">])}}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">modulation_index</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;sig_defaults&quot;</span><span class="p">][</span><span class="s2">&quot;iq&quot;</span><span class="p">][</span><span class="s2">&quot;fsk&quot;</span><span class="p">][</span><span class="s2">&quot;modulation_index&quot;</span><span class="p">])</span>
+                    <span class="n">burst_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;modulation_index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">modulation_index</span>
+                <span class="n">burst_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;snr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">snr</span>
+
+            <span class="n">new_burst_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">burst</span> <span class="ow">in</span> <span class="n">burst_list</span><span class="p">:</span>
+                <span class="n">samples</span><span class="p">,</span> <span class="n">sig_modem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_iq</span><span class="p">(</span><span class="n">burst</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
+                <span class="n">burst</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+                <span class="n">start_iq_idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">burst</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+                <span class="n">start_samples_idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">burst</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+                <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">burst</span><span class="o">.</span><span class="n">duration</span> <span class="o">-</span> <span class="n">start_samples_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;spectrum&quot;</span><span class="p">][</span><span class="s2">&quot;observation_duration&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">start_iq_idx</span><span class="p">)</span>
+                <span class="n">iq_data</span><span class="p">[</span><span class="n">start_iq_idx</span><span class="p">:</span><span class="n">start_iq_idx</span> <span class="o">+</span> <span class="n">num_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">samples</span><span class="p">[</span><span class="n">start_samples_idx</span><span class="p">:</span><span class="n">start_samples_idx</span> <span class="o">+</span> <span class="n">num_samples</span><span class="p">]</span>
+                <span class="n">burst</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start_iq_idx</span>
+                <span class="n">burst</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">num_samples</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;sig_defaults&quot;</span><span class="p">][</span><span class="s2">&quot;save_modems&quot;</span><span class="p">]:</span>
+                    <span class="n">burst</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;modem&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sig_modem</span>
+                <span class="n">new_burst_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">burst</span><span class="p">)</span>
+
+            <span class="n">iq_data_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iq_data</span><span class="p">)</span>
+            <span class="n">updated_burst_lists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_burst_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iq_data_list</span><span class="p">,</span> <span class="n">updated_burst_lists</span>
+    
+<div class="viewcode-block" id="IQDatagen.plot_iqdata">
+<a class="viewcode-back" href="../../modules/pywaspgen.html#pywaspgen.iq_datagen.IQDatagen.plot_iqdata">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_iqdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iq_data</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the spectrogram of provided IQ data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            iq_data (float complex): The IQ data to compute the spectrogram of.</span>
+<span class="sd">            ax (obj): Matplotlib axis in which to put the plot.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            obj: Matplotlib plot of the spectrogram of the IQ data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mf">1000.0</span> <span class="o">/</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.dpi&quot;</span><span class="p">],</span> <span class="mf">500.0</span> <span class="o">/</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.dpi&quot;</span><span class="p">])</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;spectrum&quot;</span><span class="p">][</span><span class="s2">&quot;observation_duration&quot;</span><span class="p">]])</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">])</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time [samples]&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Normalized Frequency [f/F_s]&quot;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;spectrum&quot;</span><span class="p">][</span><span class="s2">&quot;observation_duration&quot;</span><span class="p">],</span> <span class="mi">11</span><span class="p">))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Spectrogram River Plot&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;xkcd:salmon&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Spectrogram River Plot with Overlaid Spectrum Metadata&quot;</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">specgram</span><span class="p">(</span><span class="n">iq_data</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">noverlap</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;plasma&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;spectrum&quot;</span><span class="p">][</span><span class="s2">&quot;observation_duration&quot;</span><span class="p">]])</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s2">&quot;Amplitude (dB)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span>    </div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Virginia Tech National Security Institute.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

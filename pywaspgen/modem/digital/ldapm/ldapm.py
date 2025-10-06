@@ -7,7 +7,7 @@ class LDAPM(DIGITAL):
     """
     Linear Digital Amplitude Phase Modulation (LDAPM) modem base class.
     """
-    def __init__(self, burst):
+    def __init__(self, sig_type, pulse_type):
         """
         The constructor for the base `LDAPM` class.
 

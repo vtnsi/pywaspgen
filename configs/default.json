@@ -1,27 +1,32 @@
 {
-  "generation":
+  "generation": 
   {
     "rand_seed": 1234,
     "pool": 8,
     "max_attempts": 100
   },
-  "spectrum":
+  "spectrum": 
   {
     "observation_duration": 100000,
-    "sig_types":
+    "sig_types": 
       [
+        {"label": "BASK", "type": "ask", "order": 2},
+        {"label": "16ASK", "type": "ask", "order": 16},
+        {"label": "4PAM", "type": "pam", "order": 4},
+        {"label": "16PAM", "type": "pam", "order": 16},
         {"label": "QPSK", "type": "psk", "order": 4},
         {"label": "8PSK", "type": "psk", "order": 8},
         {"label": "16PSK", "type": "psk", "order": 16},
+        {"label": "16QAM", "type": "qam", "order": 16},
         {"label": "ALT-QPSK", "type": "psk", "order": 4}
       ],
     "max_signals": [5, 10],
     "allow_collisions_flag": false
   },
   "sig_defaults":
-  {
+  {    
     "save_modems": true,
-    "burst":
+    "burst": 
     {
       "cent_freq": [-0.3, 0.1],
       "bandwidth": [0.01, 0.4],
@@ -52,16 +57,16 @@
     }
   },
   "sig_overrides":
-  {
+  {    
     "ALT-QPSK":
     {
-      "burst":
+      "burst": 
       {
         "cent_freq": [0.2, 0.4],
         "bandwidth": [0.01, 0.2],
         "start": [-9000, 90000],
         "duration": [10000, 100000]
-      }
+      } 
     }
-  }
+  } 
 }

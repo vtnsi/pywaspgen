@@ -1,0 +1,454 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pywaspgen package &mdash; PyWASPGEN v0.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=0335fd14"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pywaspgen.modem package" href="pywaspgen.modem.html" />
+    <link rel="prev" title="pywaspgen" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyWASPGEN
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Using Pywaspgen:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../building_configuration_files.html">How to Build a Pywaspgen Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilizing_pywaspgen.html">How to Use Pywaspgen</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pywaspgen API:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pywaspgen</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pywaspgen package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pywaspgen.modem.html">pywaspgen.modem package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pywaspgen.burst_datagen">pywaspgen.burst_datagen module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pywaspgen.burst_datagen.BurstDatagen"><code class="docutils literal notranslate"><span class="pre">BurstDatagen</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pywaspgen.burst_def">pywaspgen.burst_def module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pywaspgen.burst_def.BurstDef"><code class="docutils literal notranslate"><span class="pre">BurstDef</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pywaspgen.filters">pywaspgen.filters module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pywaspgen.filters.RRC"><code class="docutils literal notranslate"><span class="pre">RRC</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pywaspgen.impairments">pywaspgen.impairments module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pywaspgen.impairments.awgn"><code class="docutils literal notranslate"><span class="pre">awgn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pywaspgen.impairments.freq_off"><code class="docutils literal notranslate"><span class="pre">freq_off()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pywaspgen.iq_datagen">pywaspgen.iq_datagen module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pywaspgen.iq_datagen.IQDatagen"><code class="docutils literal notranslate"><span class="pre">IQDatagen</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pywaspgen.validate_schema">pywaspgen.validate_schema module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pywaspgen.validate_schema.dynamic_validation"><code class="docutils literal notranslate"><span class="pre">dynamic_validation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pywaspgen.validate_schema.validate_schema"><code class="docutils literal notranslate"><span class="pre">validate_schema()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pywaspgen">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyWASPGEN</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pywaspgen</a></li>
+      <li class="breadcrumb-item active">pywaspgen package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/pywaspgen.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pywaspgen-package">
+<h1>pywaspgen package<a class="headerlink" href="#pywaspgen-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pywaspgen.modem.html">pywaspgen.modem package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pywaspgen.modem.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pywaspgen.modem.digital.html">pywaspgen.modem.digital package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pywaspgen.modem.digital.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pywaspgen.modem.digital.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pywaspgen.modem.digital.html#module-pywaspgen.modem.digital.digital">pywaspgen.modem.digital.digital module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pywaspgen.modem.digital.html#module-pywaspgen.modem.digital">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pywaspgen.modem.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pywaspgen.modem.html#module-pywaspgen.modem.modem">pywaspgen.modem.modem module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pywaspgen.modem.html#pywaspgen.modem.modem.MODEM"><code class="docutils literal notranslate"><span class="pre">MODEM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pywaspgen.modem.html#pywaspgen.modem.modem.MODEM.gen_samples"><code class="docutils literal notranslate"><span class="pre">MODEM.gen_samples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pywaspgen.modem.html#pywaspgen.modem.modem.MODEM.get_sim_awgn"><code class="docutils literal notranslate"><span class="pre">MODEM.get_sim_awgn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pywaspgen.modem.html#pywaspgen.modem.modem.MODEM.get_theory_awgn"><code class="docutils literal notranslate"><span class="pre">MODEM.get_theory_awgn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pywaspgen.modem.html#module-pywaspgen.modem">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pywaspgen.burst_datagen">
+<span id="pywaspgen-burst-datagen-module"></span><h2>pywaspgen.burst_datagen module<a class="headerlink" href="#module-pywaspgen.burst_datagen" title="Link to this heading"></a></h2>
+<p>This module provides functionality for generating burst data via the <a class="reference internal" href="#pywaspgen.burst_datagen.BurstDatagen" title="pywaspgen.burst_datagen.BurstDatagen"><code class="xref py py-class docutils literal notranslate"><span class="pre">BurstDatagen</span></code></a> object.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pywaspgen.burst_datagen.BurstDatagen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywaspgen.burst_datagen.</span></span><span class="sig-name descname"><span class="pre">BurstDatagen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'configs/default.json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_datagen.html#BurstDatagen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_datagen.BurstDatagen" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Used to create burst definition objects, of type <a class="reference internal" href="#pywaspgen.burst_def.BurstDef" title="pywaspgen.burst_def.BurstDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywaspgen.burst_def.BurstDef</span></code></a>, that specify the time and frequency extent of a burst as well as the burst’s metadata. These objects are used as input to <a class="reference internal" href="#pywaspgen.iq_datagen.IQDatagen" title="pywaspgen.iq_datagen.IQDatagen"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywaspgen.iq_datagen.IQDatagen</span></code></a> to create in-phase/quadrature (IQ) data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_datagen.BurstDatagen.gen_burstlist">
+<span class="sig-name descname"><span class="pre">gen_burstlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_datagen.html#BurstDatagen.gen_burstlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_datagen.BurstDatagen.gen_burstlist" title="Link to this definition"></a></dt>
+<dd><p>Generates a batch of burst lists using multiprocessing across cpu cores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>batch_size</strong> (<em>int</em>) – The number of burst lists to generate through multiprocessing.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list, of size defined by <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, of burst lists of burst_def objects, of type <a class="reference internal" href="#pywaspgen.burst_def.BurstDef" title="pywaspgen.burst_def.BurstDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywaspgen.burst_def.BurstDef</span></code></a>, with random parameters in ranges specified by the configuration file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_datagen.BurstDatagen.plot_burstdata">
+<span class="sig-name descname"><span class="pre">plot_burstdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">burst_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_datagen.html#BurstDatagen.plot_burstdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_datagen.BurstDatagen.plot_burstdata" title="Link to this definition"></a></dt>
+<dd><p>Plots and labels the bounding boxes of all bursts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>burst_list</strong> (<em>obj</em>) – The list of <a class="reference internal" href="#pywaspgen.burst_def.BurstDef" title="pywaspgen.burst_def.BurstDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywaspgen.burst_def.BurstDef</span></code></a> objects to plot.</p></li>
+<li><p><strong>ax</strong> (<em>obj</em>) – Matplotlib axis in which to put the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Matplotlib labeled plot of the bounding boxes of all bursts in burst_list.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pywaspgen.burst_def">
+<span id="pywaspgen-burst-def-module"></span><h2>pywaspgen.burst_def module<a class="headerlink" href="#module-pywaspgen.burst_def" title="Link to this heading"></a></h2>
+<p>This module defines the structure and behavior of bursts via the <a class="reference internal" href="#pywaspgen.burst_def.BurstDef" title="pywaspgen.burst_def.BurstDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">BurstDef</span></code></a> object.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywaspgen.burst_def.</span></span><span class="sig-name descname"><span class="pre">BurstDef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cent_freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Used to create burst definition objects that specify the time and frequency extent of a burst as well as the burst’s metadata. These objects are passed as input to <a class="reference internal" href="#pywaspgen.iq_datagen.IQDatagen" title="pywaspgen.iq_datagen.IQDatagen"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywaspgen.iq_datagen.IQDatagen</span></code></a> to create in-phase/quadrature (IQ) data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_center_freq">
+<span class="sig-name descname"><span class="pre">get_center_freq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_center_freq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_center_freq" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_end_time">
+<span class="sig-name descname"><span class="pre">get_end_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_end_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_end_time" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The end time of the burst (in seconds).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_high_freq">
+<span class="sig-name descname"><span class="pre">get_high_freq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_high_freq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_high_freq" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The higher edge of the bandwidth of the burst (in Hz).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_low_freq">
+<span class="sig-name descname"><span class="pre">get_low_freq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_low_freq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_low_freq" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The lower edge of the bandwidth of the burst (in Hz).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_meta_data">
+<span class="sig-name descname"><span class="pre">get_meta_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_meta_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_meta_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_meta_label">
+<span class="sig-name descname"><span class="pre">get_meta_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_meta_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_meta_label" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_meta_uuid">
+<span class="sig-name descname"><span class="pre">get_meta_uuid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_meta_uuid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_meta_uuid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_mid_time">
+<span class="sig-name descname"><span class="pre">get_mid_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_mid_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_mid_time" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The center time, or mid-time, of the burst (in seconds).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.burst_def.BurstDef.get_start_time">
+<span class="sig-name descname"><span class="pre">get_start_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/burst_def.html#BurstDef.get_start_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.burst_def.BurstDef.get_start_time" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The start time of the burst (in seconds).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pywaspgen.filters">
+<span id="pywaspgen-filters-module"></span><h2>pywaspgen.filters module<a class="headerlink" href="#module-pywaspgen.filters" title="Link to this heading"></a></h2>
+<p>This module provides classes for resampling and pulseshaping in-phase/quadrature (IQ) data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pywaspgen.filters.RRC">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywaspgen.filters.</span></span><span class="sig-name descname"><span class="pre">RRC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pulse_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/filters.html#RRC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.filters.RRC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Filter</span></code></p>
+<p>Root-Raised Cosine (RRC) pulse shaping filter class.</p>
+</dd></dl>
+
+</section>
+<section id="module-pywaspgen.impairments">
+<span id="pywaspgen-impairments-module"></span><h2>pywaspgen.impairments module<a class="headerlink" href="#module-pywaspgen.impairments" title="Link to this heading"></a></h2>
+<p>This module provides functions for adding impairments to in-phase/quadrature (IQ) data.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pywaspgen.impairments.awgn">
+<span class="sig-prename descclassname"><span class="pre">pywaspgen.impairments.</span></span><span class="sig-name descname"><span class="pre">awgn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr_db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng=Generator(PCG64)</span> <span class="pre">at</span> <span class="pre">0x7FAB3AE7BBC0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/impairments.html#awgn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.impairments.awgn" title="Link to this definition"></a></dt>
+<dd><p>Applies Additive White Gaussian Noise (AWGN) to the IQ data <code class="docutils literal notranslate"><span class="pre">samps</span></code>. Assumes the IQ data is normalized to unit average power.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>samps</strong> (<em>float complex</em>) – The IQ data to apply AWGN to.</p></li>
+<li><p><strong>snr_db</strong> (<em>float</em>) – The signal-to-noise ratio (SNR), in dB, of the returned IQ data.</p></li>
+<li><p><strong>rng</strong> (<em>obj</em>) – A numpy random generator object used by the random generators.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The input IQ data, <code class="docutils literal notranslate"><span class="pre">samps</span></code>, impaired by AWGN with a SNR (in dB) specified by <code class="docutils literal notranslate"><span class="pre">snr_db</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float complex</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pywaspgen.impairments.freq_off">
+<span class="sig-prename descclassname"><span class="pre">pywaspgen.impairments.</span></span><span class="sig-name descname"><span class="pre">freq_off</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/impairments.html#freq_off"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.impairments.freq_off" title="Link to this definition"></a></dt>
+<dd><p>Applies a complex frequency shift to the IQ data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>samps</strong> (<em>float complex</em>) – The IQ data to apply a complex frequency shift to.</p></li>
+<li><p><strong>freq</strong> (<em>float</em>) – The amount of frequency by which to shift the IQ data by.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The input IQ data, <code class="docutils literal notranslate"><span class="pre">samps</span></code>, impaired by a complex frequency shift specified by <code class="docutils literal notranslate"><span class="pre">freq</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float complex</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pywaspgen.iq_datagen">
+<span id="pywaspgen-iq-datagen-module"></span><h2>pywaspgen.iq_datagen module<a class="headerlink" href="#module-pywaspgen.iq_datagen" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pywaspgen.iq_datagen.IQDatagen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywaspgen.iq_datagen.</span></span><span class="sig-name descname"><span class="pre">IQDatagen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'configs/default.json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/iq_datagen.html#IQDatagen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.iq_datagen.IQDatagen" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.iq_datagen.IQDatagen.gen_iqdata">
+<span class="sig-name descname"><span class="pre">gen_iqdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">burst_lists</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/iq_datagen.html#IQDatagen.gen_iqdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.iq_datagen.IQDatagen.gen_iqdata" title="Link to this definition"></a></dt>
+<dd><p>Generates a batch of IQ data using multiprocessing across cpu cores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>burst_lists</strong> (<em>obj</em>) – A list of burst lists of <a class="reference internal" href="#pywaspgen.burst_def.BurstDef" title="pywaspgen.burst_def.BurstDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywaspgen.burst_def.BurstDef</span></code></a> objects.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of numpy IQ data arrays for the provided <code class="docutils literal notranslate"><span class="pre">burst_lists</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float complex</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywaspgen.iq_datagen.IQDatagen.plot_iqdata">
+<span class="sig-name descname"><span class="pre">plot_iqdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iq_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/iq_datagen.html#IQDatagen.plot_iqdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.iq_datagen.IQDatagen.plot_iqdata" title="Link to this definition"></a></dt>
+<dd><p>Plots the spectrogram of provided IQ data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iq_data</strong> (<em>float complex</em>) – The IQ data to compute the spectrogram of.</p></li>
+<li><p><strong>ax</strong> (<em>obj</em>) – Matplotlib axis in which to put the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Matplotlib plot of the spectrogram of the IQ data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pywaspgen.validate_schema">
+<span id="pywaspgen-validate-schema-module"></span><h2>pywaspgen.validate_schema module<a class="headerlink" href="#module-pywaspgen.validate_schema" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pywaspgen.validate_schema.dynamic_validation">
+<span class="sig-prename descclassname"><span class="pre">pywaspgen.validate_schema.</span></span><span class="sig-name descname"><span class="pre">dynamic_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/validate_schema.html#dynamic_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.validate_schema.dynamic_validation" title="Link to this definition"></a></dt>
+<dd><p>Dynamically perform additional validation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pywaspgen.validate_schema.validate_schema">
+<span class="sig-prename descclassname"><span class="pre">pywaspgen.validate_schema.</span></span><span class="sig-name descname"><span class="pre">validate_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaspgen/validate_schema.html#validate_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaspgen.validate_schema.validate_schema" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pywaspgen">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pywaspgen" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="pywaspgen" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pywaspgen.modem.html" class="btn btn-neutral float-right" title="pywaspgen.modem package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Virginia Tech National Security Institute.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
