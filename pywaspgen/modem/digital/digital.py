@@ -2,7 +2,6 @@ import numpy as np
 
 from pywaspgen.modem.modem import MODEM
 
-
 class DIGITAL(MODEM):
     """
     Digital modem base class.
@@ -19,17 +18,18 @@ class DIGITAL(MODEM):
         self.order = burst.sig_type["order"]
         self.symbol_table_create()
 
-    def gen_symbols(self, num_symbols):
+    def gen_symbols(self, num_symbols, rng):
         """
         Generates a random set of symbols from the digital modem's symbol table.
 
         Args:
             num_symbols (int): The number of random data symbols to generate.
+            rng (obj): A numpy random generator object used by the random generators.
 
         Returns:
             float complex: A numpy array, of size defined by ``num_symbols``, of random data symbols chosen uniformly from the digital modem's data symbol table.
         """
-        self.generated_symbols_idx = np.random.randint(0, len(self.symbol_table), num_symbols)
+        self.generated_symbols_idx = rng.integers(0, len(self.symbol_table), num_symbols)
         self.generated_symbols = []
         for symbol_idx in self.generated_symbols_idx:
             self.generated_symbols.append(self.symbol_table[symbol_idx])

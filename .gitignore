@@ -6,8 +6,5 @@ build/
 *.egg-info/
 
 # Environments
-.env
-.venv
-env/
-venv/
-ENV/
+*env
+.vscode

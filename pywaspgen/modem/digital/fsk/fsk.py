@@ -25,19 +25,20 @@ class FSK(DIGITAL):
         self.Rs = 1 / sps
         super().__init__(sig_type)
 
-    def _gen_samples(self, num_samples):
+    def _gen_samples(self, num_samples, rng):
         """
         Generates a random modulated FSK data sample stream from the FSK modem's data symbol table.
 
         Args:
             num_samples (int): The length, in samples, of the random modulated FSK data sample stream to generate.
+            rng (obj): A numpy random generator object used by the random generators.
 
         Returns:
             float complex: A numpy array, of size defined by ``num_samples``, of FSK data symbols chosen uniformly from the FSK modem's data symbol table.
         """
         total_symbols = int(num_samples * self.Rs) + 1
         if total_symbols >= 1:
-            symbols = self.gen_symbols(total_symbols)
+            symbols = self.gen_symbols(total_symbols, rng)
             t = list(range(len(symbols) * self.sps))
             samples = []
             for k in range(len(symbols)):

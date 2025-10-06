@@ -15,33 +15,24 @@ class LDAPM(DIGITAL):
             sig_type (dict): The signal type of the LDAPM modem.
             pulse_type (dict): The pulse shape metadata of the LDAPM modem.
         """
-        super().__init__(burst)
-
-        self._update_burst_metadata(burst)
-        self.pulse_type = burst.metadata["pulse_type"]
-        self.__set_pulse_shape()
-
-    def _update_burst_metadata(self, burst):
-        rng = np.random.default_rng(42)
-        beta = round(100.0 * rng.uniform(*burst.metadata["pulse_shape"]["beta"])) / 100.0
-        span = rng.integers(*burst.metadata["pulse_shape"]["span"], endpoint=True)
-        sps = round(10.0 * ((beta + 1.0) / burst.bandwidth)) / 10.0
-        burst.bandwidth = (beta + 1.0) / sps
-        burst.metadata["pulse_type"] = {"sps": sps, "format": burst.metadata["pulse_shape"]["format"], "params": {"beta": beta, "span": span, "window": (burst.metadata["pulse_shape"]["window"]["type"], burst.metadata["pulse_shape"]["window"]["params"])}}
-
-    def _gen_samples(self, num_samples):
+        super().__init__(sig_type)
+        self.pulse_type = pulse_type
+        self.__set_pulse_shape()     
+        
+    def _gen_samples(self, num_samples, rng):
         """
         Generates a random modulated LDAPM data sample stream of pulse shaped LDAPM data symbols from the LDAPM modem's data symbol table.
 
         Args:
             num_samples (int): The length, in samples, of the random modulated LDAPM data sample stream to generate.
+            rng (obj): A numpy random generator object used by the random generators.
 
         Returns:
             float complex: A numpy array, of size defined by ``num_samples``, of pulse shaped LDAPM data symbols chosen uniformly from the LDAPM modem's data symbol table.
         """
         total_symbols = self.pulse_shaper.calc_num_symbols(num_samples)
         if total_symbols >= 1:
-            return self.pulse_shaper.filter(self.gen_symbols(total_symbols), "interpolate")[0:num_samples]
+            return self.pulse_shaper.filter(self.gen_symbols(total_symbols, rng), "interpolate")[0:num_samples]
         else:
             return np.array([])     
     
