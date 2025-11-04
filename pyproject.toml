@@ -15,11 +15,10 @@ dependencies = [
         "sphinx",
         "sphinx-rtd-theme",
         "sphinx-jsonschema",
-        "tqdm",
-        "pytest",
-        "pre-commit"
+        "pyqt6",
+        "tqdm"        
 ]
-requires-python = ">= 3.8"
+requires-python = ">= 3.10"
 authors = [
   {name = "Virginia Tech National Security Institute"}
 ]
@@ -32,12 +31,3 @@ license = {text = "MIT License"}
 
 [tool.setuptools.package-dir]
 pywaspgen = "pywaspgen"
-
-[tool.black]
-line-length = 1000
-
-[tool.ruff]
-line-length = 1000
-
-[tool.isort]
-profile = "black"

@@ -1,13 +1,18 @@
 """
 This module provides functionality for generating burst data via the :class:`BurstDatagen` object.
 """
+
+import matplotlib
+matplotlib.use('QtAgg') 
+
 import distinctipy
 import json
-import multiprocessing
+from multiprocessing import set_start_method
+set_start_method('spawn', force=True)
+from multiprocessing import get_context
 import numpy as np
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-import tqdm
 import uuid
 from pywaspgen import burst_def
 
@@ -88,7 +93,7 @@ class BurstDatagen:
         elif type(range[0]).__name__ == "int":
             return rng.integers(range[0], range[1], endpoint=True)
 
-    def gen_burst(self, rng=None):
+    def _gen_burst(self, rng):
         """
         Generates a random :class:`pywaspgen.burst_def.BurstDef` object.
 
@@ -98,7 +103,6 @@ class BurstDatagen:
         Returns:
             obj: A :class:`pywaspgen.burst_def.BurstDef` object with random parameters in ranges specified by the configuration file.
         """
-        rng = rng or self.rng
         sig_type = self.config["spectrum"]["sig_types"][rng.choice(len(self.config["spectrum"]["sig_types"]))]
 
         cent_freq = self.__get_random(rng, sig_type, "cent_freq")
@@ -109,23 +113,24 @@ class BurstDatagen:
         metadata = {"UUID": uuid.UUID(bytes=rng.bytes(16), version=4)}        
         return burst_def.BurstDef(cent_freq, bandwidth, start, duration, sig_type, metadata)
 
-    def gen_burstlist(self, burst_idx=-1):
+    def _gen_burstlist(self, rng):
         """
         Generates a random burst list of :class:`pywaspgen.burst_def.BurstDef` objects.
 
         Args:
-            burst_idx (int): Index for multiprocessing randomization bookkeeping by :meth:`pywaspgen.burst_datagen.BurstDatagen.gen_batch`. Not used otherwise.
+            seed (int): Sets the seed for randomization.
 
         Returns:
             obj: A list of :class:`pywaspgen.burst_def.BurstDef` objects each with random parameters in ranges specified by the configuration file.
         """
-        rng = self.rng if burst_idx == -1 else np.random.default_rng([burst_idx, self.config["generation"]["rand_seed"]])
+        total_signals = rng.integers(self.config["spectrum"]["max_signals"][0], self.config["spectrum"]["max_signals"][1], endpoint=True) 
+
         burst_list = []
         sig_count = 0
         stop_gen = False
         trial_count = 0
         while not stop_gen:
-            candidate_burst = self.gen_burst(rng)
+            candidate_burst = self._gen_burst(rng)
             if not self.__check_not_observed(candidate_burst) and (self.config["spectrum"]["allow_collisions_flag"] or (not self.config["spectrum"]["allow_collisions_flag"] and not self.__check_collisions(candidate_burst, burst_list))):
                 burst_list.append(candidate_burst)
                 sig_count += 1
@@ -134,11 +139,11 @@ class BurstDatagen:
                 trial_count += 1
             if trial_count == self.config["generation"]["max_attempts"]:
                 stop_gen = True
-            if sig_count == self.config["spectrum"]["max_signals"]:
+            if sig_count == total_signals:
                 stop_gen = True
         return burst_list
 
-    def gen_batch(self, batch_size):
+    def gen_burstlist(self, batch_size=1):
         """
         Generates a batch of burst lists using multiprocessing across cpu cores.
 
@@ -148,8 +153,9 @@ class BurstDatagen:
         Returns:
             obj: A list, of size defined by ``batch_size``, of burst lists of burst_def objects, of type :class:`pywaspgen.burst_def.BurstDef`, with random parameters in ranges specified by the configuration file.
         """
-        with multiprocessing.Pool(self.config["generation"]["pool"]) as p:
-            return list(p.map(self.gen_burstlist, tqdm.tqdm(range(batch_size), total=batch_size)))
+        with get_context('spawn').Pool(self.config["generation"]["pool"]) as pool:
+            rngs = self.rng.spawn(batch_size)
+            return list(pool.map(self._gen_burstlist, rngs))
 
     def plot_burstdata(self, burst_list, ax=[]):
         """

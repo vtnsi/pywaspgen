@@ -19,19 +19,20 @@ class LDAPM(DIGITAL):
         self.pulse_type = pulse_type
         self.__set_pulse_shape()     
         
-    def _gen_samples(self, num_samples):
+    def _gen_samples(self, num_samples, rng):
         """
         Generates a random modulated LDAPM data sample stream of pulse shaped LDAPM data symbols from the LDAPM modem's data symbol table.
 
         Args:
             num_samples (int): The length, in samples, of the random modulated LDAPM data sample stream to generate.
+            rng (obj): A numpy random generator object used by the random generators.
 
         Returns:
             float complex: A numpy array, of size defined by ``num_samples``, of pulse shaped LDAPM data symbols chosen uniformly from the LDAPM modem's data symbol table.
         """
         total_symbols = self.pulse_shaper.calc_num_symbols(num_samples)
         if total_symbols >= 1:
-            return self.pulse_shaper.filter(self.gen_symbols(total_symbols), "interpolate")[0:num_samples]
+            return self.pulse_shaper.filter(self.gen_symbols(total_symbols, rng), "interpolate")[0:num_samples]
         else:
             return np.array([])     
     
