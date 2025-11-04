@@ -65,15 +65,15 @@ class IQDatagen:
         Returns:
             float complex: A list of numpy IQ data arrays for the provided ``burst_lists``.
         """        
-        k, m = divmod(len(burst_lists), self.config["generation"]["pool"])
-        process_burst_lists = []
-        start = 0
-        for idx in range(self.config["generation"]["pool"]):
-            end = start + k + (1 if idx < m else 0)
-            process_burst_lists.append(burst_lists[start:end])
-            start = end
-
         if self.config['generation']["pool"] != 1:
+            k, m = divmod(len(burst_lists), self.config["generation"]["pool"])
+            process_burst_lists = []
+            start = 0
+            for idx in range(self.config["generation"]["pool"]):
+                end = start + k + (1 if idx < m else 0)
+                process_burst_lists.append(burst_lists[start:end])
+                start = end
+
             rngs = self.rng.spawn(len(burst_lists))
             set_start_method('spawn', force=True)
             with get_context('spawn').Pool(self.config["generation"]["pool"]) as pool:
