@@ -2,7 +2,7 @@
   "generation":
   {
     "rand_seed": 1337,
-    "pool": 8,
+    "pool": 1,
     "max_attempts": 100
   },
   "spectrum":

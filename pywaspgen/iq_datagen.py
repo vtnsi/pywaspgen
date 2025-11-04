@@ -4,7 +4,6 @@ matplotlib.use('QtAgg')
 import gc
 import json
 from multiprocessing import set_start_method
-set_start_method('spawn', force=True)
 from multiprocessing import get_context
 import matplotlib.pyplot as plt
 import numpy as np
@@ -74,22 +73,25 @@ class IQDatagen:
             process_burst_lists.append(burst_lists[start:end])
             start = end
 
-        rngs = self.rng.spawn(len(burst_lists))
-        with get_context('spawn').Pool(self.config["generation"]["pool"]) as pool:
-            with tqdm(total=sum(1 for sublist in process_burst_lists if len(sublist) > 0)) as pbar:
-                results = []
-                for burst_lists, rng in zip(process_burst_lists, rngs):
-                    result = pool.apply_async(_gen_iqdata_static, args=((self, burst_lists, rng),), callback=lambda _: pbar.update(1))
-                    results.append(result)
-                output = [r.get() for r in results]
+        if self.config['generation']["pool"] != 1:
+            rngs = self.rng.spawn(len(burst_lists))
+            set_start_method('spawn', force=True)
+            with get_context('spawn').Pool(self.config["generation"]["pool"]) as pool:
+                with tqdm(total=sum(1 for sublist in process_burst_lists if len(sublist) > 0)) as pbar:
+                    results = []
+                    for burst_lists, rng in zip(process_burst_lists, rngs):
+                        result = pool.apply_async(_gen_iqdata_static, args=((self, burst_lists, rng),), callback=lambda _: pbar.update(1))
+                        results.append(result)
+                    output = [r.get() for r in results]
+            iq_data_list, updated_burst_lists = zip(*output)
+            iq_data = [item for sublist in iq_data_list for item in sublist]
+            updated_burst_list = [item for sublist in updated_burst_lists for item in sublist]
 
-        iq_data_list, updated_burst_lists = zip(*output)
-        iq_data = [item for sublist in iq_data_list for item in sublist]
-        updated_burst_list = [item for sublist in updated_burst_lists for item in sublist]
-        
-        del rngs, results, result, output, iq_data_list, updated_burst_lists
-        gc.collect()
-        
+            del rngs, results, result, output, iq_data_list, updated_burst_lists
+            gc.collect()            
+        else:
+            iq_data, updated_burst_list = self._gen_iqdata(burst_lists, self.rng)
+
         return iq_data, updated_burst_list
     
     def _gen_iqdata(self, burst_lists, rng):
