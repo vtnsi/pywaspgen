@@ -19,6 +19,7 @@ if __name__ == "__main__":
     num_symbols = 100000  # The number of data symbols to be used to calculate the simulated performance. Higher number will approach theory better but take longer to execute.
     snr_db_range = (0, 20)  # The range of signal-to-noise ratios (SNRs) to calculate the performance of.
 
+    snrs = []
     ser_sim = []
     ser_theory = []
     for snr_db in range(snr_db_range[0], snr_db_range[1] + 1):
@@ -27,13 +28,16 @@ if __name__ == "__main__":
         rx_samples = impairments.awgn(tx_samples, snr_db)  # Applies the AWGN channel to the transmit samples to get the received samples.
 
         # Calculates the number of symbols different between the transmit symbols and the received symbols and then calculates the symbol error rate (SER).
-        ser_sim.append(modem.get_sim_awgn(rx_samples))
-        ser_theory.append(modem.get_theory_awgn(snr_db))  # Generates the theoretical SER (theoretical equation assumed to be provided by the modem itself).
+        ser = modem.get_sim_awgn(rx_samples)
+        if ser != 0:
+            snrs.append(snr_db)
+            ser_sim.append(ser)
+            ser_theory.append(modem.get_theory_awgn(snr_db))  # Generates the theoretical SER (theoretical equation assumed to be provided by the modem itself).
 
     # Plotting SER Simulation and Theory Curves
     plt.figure(figsize=(15, 5))
-    plt.semilogy(range(snr_db_range[0], snr_db_range[1] + 1), ser_sim, "b-*", label="Simulated")
-    plt.semilogy(range(snr_db_range[0], snr_db_range[1] + 1), ser_theory, "r-*", label="Theory")
+    plt.semilogy(snrs, ser_sim, "b-*", label="Simulated")
+    plt.semilogy(snrs, ser_theory, "r-*", label="Theory")
     plt.xlabel("SNR (dB)")
     plt.ylabel("Symbol Error Rate (SER)")
     plt.title("Signal Type: " + str(sig_type) + "\nPulse Type: " + str(pulse_type))

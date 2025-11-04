@@ -7,7 +7,9 @@ matplotlib.use('QtAgg')
 
 import distinctipy
 import json
-import multiprocessing
+from multiprocessing import set_start_method
+set_start_method('spawn', force=True)
+from multiprocessing import get_context
 import numpy as np
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
@@ -151,7 +153,7 @@ class BurstDatagen:
         Returns:
             obj: A list, of size defined by ``batch_size``, of burst lists of burst_def objects, of type :class:`pywaspgen.burst_def.BurstDef`, with random parameters in ranges specified by the configuration file.
         """
-        with multiprocessing.Pool(self.config["generation"]["pool"]) as pool:
+        with get_context('spawn').Pool(self.config["generation"]["pool"]) as pool:
             rngs = self.rng.spawn(batch_size)
             return list(pool.map(self._gen_burstlist, rngs))
 

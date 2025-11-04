@@ -3,7 +3,9 @@ matplotlib.use('QtAgg')
 
 import gc
 import json
-import multiprocessing
+from multiprocessing import set_start_method
+set_start_method('spawn', force=True)
+from multiprocessing import get_context
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
@@ -73,7 +75,7 @@ class IQDatagen:
             start = end
 
         rngs = self.rng.spawn(len(burst_lists))
-        with multiprocessing.Pool(self.config["generation"]["pool"]) as pool:
+        with get_context('spawn').Pool(self.config["generation"]["pool"]) as pool:
             with tqdm(total=sum(1 for sublist in process_burst_lists if len(sublist) > 0)) as pbar:
                 results = []
                 for burst_lists, rng in zip(process_burst_lists, rngs):
