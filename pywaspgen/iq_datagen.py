@@ -110,12 +110,10 @@ class IQDatagen:
         for burst_list in burst_lists:
             iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf, rng=rng)
 
-            if type(burst_list) is not list:
-                burst_list = [burst_list]
-
             for k in range(len(burst_list)):
                 if "snr" not in burst_list[k].metadata.keys():
                     snr = rng.uniform(*self.config["sig_defaults"]["iq"]["snr"])
+                    burst_list[k].metadata["snr"] = snr
                 if burst_list[k].sig_type["type"] in ["ask", "psk", "pam", "qam"]:
                     beta = round(100.0 * rng.uniform(*self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"])) / 100.0
                     span = rng.integers(*self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"], endpoint=True)
@@ -125,8 +123,7 @@ class IQDatagen:
                 else:
                     modulation_index = rng.uniform(*self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"])
                     burst_list[k].metadata["modulation_index"] = modulation_index
-                burst_list[k].metadata["snr"] = snr
-
+                
             new_burst_list = []
             for burst in burst_list:
                 samples, sig_modem = self._get_iq(burst, rng)
