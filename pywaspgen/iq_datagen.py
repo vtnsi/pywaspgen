@@ -104,12 +104,14 @@ class IQDatagen:
 
         Returns:
             float complex, obj: A numpy array of aggregate IQ data generated from the ``burst_list``, An updated ``burst_list`` with values adjusted based on the parameters used to create the aggregate IQ data.
-        """
-
+        """        
         iq_data_list = []
         updated_burst_lists = []
         for burst_list in burst_lists:
             iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf, rng=rng)
+
+            if type(burst_list) is not list:
+                burst_list = [burst_list]
 
             for k in range(len(burst_list)):
                 if "snr" not in burst_list[k].metadata.keys():
