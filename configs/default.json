@@ -41,7 +41,7 @@
         "pulse_shape":
         {
           "format": "RRC",
-          "beta": [0.1, 0.9],
+          "beta": [0.35, 0.35],
           "span": [10, 10],
           "window": 
           {

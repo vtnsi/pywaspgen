@@ -4,7 +4,6 @@ matplotlib.use('QtAgg')
 import gc
 import json
 from multiprocessing import set_start_method
-set_start_method('spawn', force=True)
 from multiprocessing import get_context
 import matplotlib.pyplot as plt
 import numpy as np
@@ -66,30 +65,33 @@ class IQDatagen:
         Returns:
             float complex: A list of numpy IQ data arrays for the provided ``burst_lists``.
         """        
-        k, m = divmod(len(burst_lists), self.config["generation"]["pool"])
-        process_burst_lists = []
-        start = 0
-        for idx in range(self.config["generation"]["pool"]):
-            end = start + k + (1 if idx < m else 0)
-            process_burst_lists.append(burst_lists[start:end])
-            start = end
+        if self.config['generation']["pool"] != 1:
+            k, m = divmod(len(burst_lists), self.config["generation"]["pool"])
+            process_burst_lists = []
+            start = 0
+            for idx in range(self.config["generation"]["pool"]):
+                end = start + k + (1 if idx < m else 0)
+                process_burst_lists.append(burst_lists[start:end])
+                start = end
 
-        rngs = self.rng.spawn(len(burst_lists))
-        with get_context('spawn').Pool(self.config["generation"]["pool"]) as pool:
-            with tqdm(total=sum(1 for sublist in process_burst_lists if len(sublist) > 0)) as pbar:
-                results = []
-                for burst_lists, rng in zip(process_burst_lists, rngs):
-                    result = pool.apply_async(_gen_iqdata_static, args=((self, burst_lists, rng),), callback=lambda _: pbar.update(1))
-                    results.append(result)
-                output = [r.get() for r in results]
+            rngs = self.rng.spawn(len(burst_lists))
+            set_start_method('spawn', force=True)
+            with get_context('spawn').Pool(self.config["generation"]["pool"]) as pool:
+                with tqdm(total=sum(1 for sublist in process_burst_lists if len(sublist) > 0)) as pbar:
+                    results = []
+                    for burst_lists, rng in zip(process_burst_lists, rngs):
+                        result = pool.apply_async(_gen_iqdata_static, args=((self, burst_lists, rng),), callback=lambda _: pbar.update(1))
+                        results.append(result)
+                    output = [r.get() for r in results]
+            iq_data_list, updated_burst_lists = zip(*output)
+            iq_data = [item for sublist in iq_data_list for item in sublist]
+            updated_burst_list = [item for sublist in updated_burst_lists for item in sublist]
 
-        iq_data_list, updated_burst_lists = zip(*output)
-        iq_data = [item for sublist in iq_data_list for item in sublist]
-        updated_burst_list = [item for sublist in updated_burst_lists for item in sublist]
-        
-        del rngs, results, result, output, iq_data_list, updated_burst_lists
-        gc.collect()
-        
+            del rngs, results, result, output, iq_data_list, updated_burst_lists
+            gc.collect()            
+        else:
+            iq_data, updated_burst_list = self._gen_iqdata(burst_lists, self.rng)
+
         return iq_data, updated_burst_list
     
     def _gen_iqdata(self, burst_lists, rng):
@@ -102,15 +104,16 @@ class IQDatagen:
 
         Returns:
             float complex, obj: A numpy array of aggregate IQ data generated from the ``burst_list``, An updated ``burst_list`` with values adjusted based on the parameters used to create the aggregate IQ data.
-        """
-
+        """        
         iq_data_list = []
         updated_burst_lists = []
         for burst_list in burst_lists:
             iq_data = impairments.awgn(np.zeros(self.config["spectrum"]["observation_duration"], dtype=np.csingle), -np.inf, rng=rng)
 
             for k in range(len(burst_list)):
-                snr = rng.uniform(*self.config["sig_defaults"]["iq"]["snr"])
+                if "snr" not in burst_list[k].metadata.keys():
+                    snr = rng.uniform(*self.config["sig_defaults"]["iq"]["snr"])
+                    burst_list[k].metadata["snr"] = snr
                 if burst_list[k].sig_type["type"] in ["ask", "psk", "pam", "qam"]:
                     beta = round(100.0 * rng.uniform(*self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["beta"])) / 100.0
                     span = rng.integers(*self.config["sig_defaults"]["iq"]["ldapm"]["pulse_shape"]["span"], endpoint=True)
@@ -120,8 +123,7 @@ class IQDatagen:
                 else:
                     modulation_index = rng.uniform(*self.config["sig_defaults"]["iq"]["fsk"]["modulation_index"])
                     burst_list[k].metadata["modulation_index"] = modulation_index
-                burst_list[k].metadata["snr"] = snr
-
+                
             new_burst_list = []
             for burst in burst_list:
                 samples, sig_modem = self._get_iq(burst, rng)

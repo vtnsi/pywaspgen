@@ -13,14 +13,6 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install PyWASPG
 pip install .
 ```
 
-## For Developers
-If you're interested in contributing to the development of PyWASPGEN, you'll need to install `pre-commit`.
-
-```bash
-pip install pre-commit
-pre-commit install
-```
-
 ## Usage
 Generating synthetic radio frequency captures using PyWASPGEN can either be done directly through user-specified signal generation parameters or pseudorandomly through user-specified signal generation parameter ranges. Note: PyWASPGEN should be your first import to avoid issues with process spawning.
 
