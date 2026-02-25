@@ -87,10 +87,13 @@ class BurstDatagen:
         else:
             range = self.config["sig_defaults"]["burst"][parameter]
 
-        if type(range[0]).__name__ == "float":
-            return rng.uniform(range[0], range[1])
-        elif type(range[0]).__name__ == "int":
-            return rng.integers(range[0], range[1], endpoint=True)
+        if len(range) == 2:
+            if type(range[0]).__name__ == "float":
+                return rng.uniform(range[0], range[1])
+            elif type(range[0]).__name__ == "int":
+                return rng.integers(range[0], range[1], endpoint=True)
+        else:
+            return rng.choice(range)
 
     def _gen_burst(self, rng):
         """
@@ -103,7 +106,7 @@ class BurstDatagen:
             obj: A :class:`pywaspgen.burst_def.BurstDef` object with random parameters in ranges specified by the configuration file.
         """
         sig_type = self.config["spectrum"]["sig_types"][rng.choice(len(self.config["spectrum"]["sig_types"]))]
-
+    
         cent_freq = self.__get_random(rng, sig_type, "cent_freq")
         bandwidth = self.__get_random(rng, sig_type, "bandwidth")
         start = self.__get_random(rng, sig_type, "start")

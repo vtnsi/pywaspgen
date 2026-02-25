@@ -8,10 +8,10 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     # Instantiate a burst generator object and specify the signal parameter configuration file to use.
-    burst_gen = BurstDatagen("configs/default.json")
+    burst_gen = BurstDatagen("configs/wifi_band.json")
     # Instantiate an iq generator object and specify the signal parameter configuration file to use.
 
-    iq_gen = IQDatagen("configs/default.json")
+    iq_gen = IQDatagen("configs/wifi_band.json")
 
     # In PyWASPGEN, a burst defines the 'extent' and 'type' of signal to be created.
     #   extent - The time/frequency bounds of the signal to be generated.
