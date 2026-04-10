@@ -8,3 +8,4 @@ os.environ["NUMEXPR_NUM_THREADS"] = "1"
 from .burst_datagen import BurstDatagen
 from .burst_def import BurstDef
 from .iq_datagen import IQDatagen
+from .data_config import DatasetConfig

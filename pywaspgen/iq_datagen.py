@@ -27,7 +27,9 @@ class IQDatagen:
         with open(config_file, "r") as config_file_id:
             instance = json.load(config_file_id)
             self.config = instance
-        self.rng = np.random.default_rng(self.config["generation"]["rand_seed"])
+
+    def set_rng(self, rng):
+        self.rng = np.random.default_rng(rng)
 
     def _get_iq(self, burst, rng):
         """
