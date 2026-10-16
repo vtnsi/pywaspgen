@@ -1,9 +1,12 @@
 """
 This module provides functionality for generating burst data via the :class:`BurstDatagen` object.
 """
-
+import os
 import matplotlib
-matplotlib.use('QtAgg') 
+if os.environ.get("DISPLAY"):
+    matplotlib.use("QtAgg")
+else:
+    matplotlib.use("Agg")
 
 import distinctipy
 import json

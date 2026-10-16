@@ -1,5 +1,9 @@
+import os
 import matplotlib
-matplotlib.use('QtAgg') 
+if os.environ.get("DISPLAY"):
+    matplotlib.use("QtAgg")
+else:
+    matplotlib.use("Agg")
 
 import gc
 import json

@@ -7,4 +7,5 @@ build/
 
 # Environments
 *.env*
+*.venv*
 .vscode
